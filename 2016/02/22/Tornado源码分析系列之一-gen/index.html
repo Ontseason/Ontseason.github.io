@@ -41,7 +41,7 @@
 <link href="/css/main.css?v=5.0.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Tornado," />
 
 
 
@@ -57,15 +57,22 @@
 
 
 
-<meta name="description" content="Programer | Pythoner | Shameless">
-<meta property="og:type" content="website">
-<meta property="og:title" content="remones note">
-<meta property="og:url" content="http://remones.me/index.html">
+<meta name="description" content="Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也十分好奇和感兴趣，所以在阅读了一些源码之后也试着整理思路简单分析一下。
+先从一个简单的例子开始:
+12345678910111213141516171819202122#!/usr/bin/env python# encoding">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tornado源码分析系列之一: gen">
+<meta property="og:url" content="http://remones.me/2016/02/22/Tornado源码分析系列之一-gen/index.html">
 <meta property="og:site_name" content="remones note">
-<meta property="og:description" content="Programer | Pythoner | Shameless">
+<meta property="og:description" content="Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也十分好奇和感兴趣，所以在阅读了一些源码之后也试着整理思路简单分析一下。
+先从一个简单的例子开始:
+12345678910111213141516171819202122#!/usr/bin/env python# encoding">
+<meta property="og:updated_time" content="2016-02-21T18:54:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="remones note">
-<meta name="twitter:description" content="Programer | Pythoner | Shameless">
+<meta name="twitter:title" content="Tornado源码分析系列之一: gen">
+<meta name="twitter:description" content="Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也十分好奇和感兴趣，所以在阅读了一些源码之后也试着整理思路简单分析一下。
+先从一个简单的例子开始:
+12345678910111213141516171819202122#!/usr/bin/env python# encoding">
 
 
 
@@ -83,7 +90,7 @@
   };
 </script>
 
-  <title> remones note </title>
+  <title> Tornado源码分析系列之一: gen | remones note </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -100,9 +107,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -181,24 +186,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
 
+  <div id="posts" class="posts-expand">
     
-
-    
-    
-      
-      
-        
-        
-        
-      
-
-      
-    
-
-    
-      
 
   
   
@@ -218,10 +208,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/02/22/Tornado源码分析系列之一-gen/" itemprop="url">
-                  Tornado源码分析系列之一: gen
-                </a>
+                Tornado源码分析系列之一: gen
               
             
           </h1>
@@ -259,9 +246,7 @@
       
 
       
-        
-          
-            <p>Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也十分好奇和感兴趣，所以在阅读了一些源码之后也试着整理思路简单分析一下。</p>
+        <p>Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也十分好奇和感兴趣，所以在阅读了一些源码之后也试着整理思路简单分析一下。</p>
 <p>先从一个简单的例子开始:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">from</span> tornado.ioloop <span class="keyword">import</span> IOLoop</span><br><span class="line"><span class="keyword">from</span> tornado <span class="keyword">import</span> gen</span><br><span class="line"><span class="keyword">from</span> tornado.httpclient <span class="keyword">import</span> AsyncHTTPClient</span><br><span class="line"></span><br><span class="line"><span class="decorator">@gen.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch_url</span><span class="params">(url)</span>:</span></span><br><span class="line">    http_client = AsyncHTTPClient()</span><br><span class="line">    response = <span class="keyword">yield</span> http_client.fetch(url)</span><br><span class="line">    <span class="keyword">raise</span> gen.Return(response.body)</span><br><span class="line">    </span><br><span class="line"><span class="decorator">@gen.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    url = <span class="string">'http://httpbin.org/get'</span></span><br><span class="line">    content = <span class="keyword">yield</span> fetch_url(url)</span><br><span class="line">    print(content)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    ioloop = IOLoop.instance()</span><br><span class="line">    ioloop.run_sync(main)</span><br></pre></td></tr></table></figure>
 <p>这段代码的神奇之处在于被<code>gen.coroutine</code>修饰的函数内部, 凡是需要异步调用的过程只需加上 <code>yield</code>，就能让获取异步执行的结果看起来和”赋值”一样简单。</p>
@@ -281,29 +266,31 @@
 <p>根据<code>While True</code>部分的代码，很容易看出<code>self.run</code> 其实就是不断从有结果的<code>Future</code>对象中将结果取出，发送到生成器内部，再继续执行<code>handled_yield</code>，这个过程会一直持续下去，直到生成器迭代结束，最终设置函数返回值。</p>
 <p>整个大体的思路流程就是这样，当然其实对一些技术实现的细节选择了跳过，有兴趣继续深入阅读 Tornado 源码。</p>
 
-          
-        
       
     </div>
 
     <footer class="post-footer">
       
-
+        <div class="post-tags">
+          
+            <a href="/tags/Tornado/" rel="tag">#Tornado</a>
+          
+        </div>
       
 
       
+
       
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
 
-  </section>
-
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -311,6 +298,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -330,8 +321,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://ww3.sinaimg.cn/large/8eb3c606jw8e30umhfk5kj.jpg"
@@ -378,6 +378,23 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
       
 
     </div>
@@ -459,6 +476,167 @@
 
 
   
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
 
   
 
