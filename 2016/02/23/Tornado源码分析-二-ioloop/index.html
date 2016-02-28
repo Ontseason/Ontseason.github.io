@@ -1,0 +1,743 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Tornado," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.0" />
+
+
+
+
+
+
+<meta name="description" content="引言在剖析 ioloop 的实现代码之前，有一些 I/O 中常出现的概念需要清楚。简单复习和归纳一下几个名词的含义。
+同步和异步同步和异步的区别表现在程序执行的方式上。同步就是顺序执行，一件事干完了才能继续另一件事，这个不多说了，主要是对异步的理解。
+举个例子，如果你想发送一封邮件, 首先你需要这样做
+123mail_client = smtp.connect() # 和邮件服务端建立连接mail">
+<meta property="og:type" content="article">
+<meta property="og:title" content="'Tornado源码分析(二): ioloop">
+<meta property="og:url" content="http://remones.me/2016/02/23/Tornado源码分析-二-ioloop/index.html">
+<meta property="og:site_name" content="remones note">
+<meta property="og:description" content="引言在剖析 ioloop 的实现代码之前，有一些 I/O 中常出现的概念需要清楚。简单复习和归纳一下几个名词的含义。
+同步和异步同步和异步的区别表现在程序执行的方式上。同步就是顺序执行，一件事干完了才能继续另一件事，这个不多说了，主要是对异步的理解。
+举个例子，如果你想发送一封邮件, 首先你需要这样做
+123mail_client = smtp.connect() # 和邮件服务端建立连接mail">
+<meta property="og:image" content="http://hi.csdn.net/attachment/201007/31/0_1280550787I2K8.gif">
+<meta property="og:image" content="http://hi.csdn.net/attachment/201007/31/0_128055089469yL.gif">
+<meta property="og:image" content="http://hi.csdn.net/attachment/201007/31/0_1280551028YEeQ.gif">
+<meta property="og:updated_time" content="2016-02-28T18:28:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="'Tornado源码分析(二): ioloop">
+<meta name="twitter:description" content="引言在剖析 ioloop 的实现代码之前，有一些 I/O 中常出现的概念需要清楚。简单复习和归纳一下几个名词的含义。
+同步和异步同步和异步的区别表现在程序执行的方式上。同步就是顺序执行，一件事干完了才能继续另一件事，这个不多说了，主要是对异步的理解。
+举个例子，如果你想发送一封邮件, 首先你需要这样做
+123mail_client = smtp.connect() # 和邮件服务端建立连接mail">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: '[object Object]',
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 'Tornado源码分析(二): ioloop | remones note </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">remones note</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">to be, or not to be</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                'Tornado源码分析(二): ioloop
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-02-23T21:40:31+08:00" content="2016-02-23">
+              2016-02-23
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>在剖析 ioloop 的实现代码之前，有一些 I/O 中常出现的概念需要清楚。简单复习和归纳一下几个名词的含义。</p>
+<h4 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a>同步和异步</h4><p>同步和异步的区别表现在程序执行的方式上。同步就是顺序执行，一件事干完了才能继续另一件事，这个不多说了，主要是对异步的理解。</p>
+<p>举个例子，如果你想发送一封邮件, 首先你需要这样做</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mail_client = smtp.connect() <span class="comment"># 和邮件服务端建立连接</span></span><br><span class="line">mail_client.send_mail(mailto) <span class="comment"># 发送邮件</span></span><br><span class="line">do_otherthing()</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+<p>这个过程是同步的我相信没人会有异议。接下来，日过你想在邮件发送完成之后抄送给其他人或者回执到自己的邮箱，但这些事你不用关心什么时候能完成，因为你意外发现有别的服务是专门做这事，而你要做的就是告诉那个服务在邮件发完之后你是想抄送还是想回执就够了。所以代码就演变这样：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mail_client = smtp.connect() <span class="comment"># 和邮件服务端建立连接</span></span><br><span class="line">mail_client.send_mail(mailto, callback=after_send) <span class="comment"># 发送邮件并注册回调函数</span></span><br><span class="line">do_otherthing()</span><br></pre></td></tr></table></figure>
+<p>现在的执行方式就成异步的了，因为借助 callback, <code>send_mail</code> 完成之后给上面提及的那个服务注册了一个 callback 之后会立刻返回，而不用去管回执或抄送的过程会在什么时候执行，什么时候完成。</p>
+<h4 id="阻塞和非阻塞"><a href="#阻塞和非阻塞" class="headerlink" title="阻塞和非阻塞"></a>阻塞和非阻塞</h4><p><code>smtp.connect()</code> 需要等待和邮件服务端建立连接完成才能返回，包含这个等待的过程我们称之为阻塞，如果不等待，没有连接成功立刻就直接返回错误之类的话，这个过程就成非阻塞的了。</p>
+<h4 id="并发和并行"><a href="#并发和并行" class="headerlink" title="并发和并行"></a>并发和并行</h4><p>简单概括：</p>
+<ul>
+<li>并发是指个事件在同一时间间隔内发生</li>
+<li>并行是指在多核或多CPU环境下多个事件在同一时刻发生</li>
+</ul>
+<hr>
+<h3 id="Linux内核态和用户态"><a href="#Linux内核态和用户态" class="headerlink" title="Linux内核态和用户态"></a>Linux内核态和用户态</h3><p>有一段很好的解释，<strong>摘自</strong>: <a href="http://yanan0628.iteye.com/blog/2268934" target="_blank" rel="external">http://yanan0628.iteye.com/blog/2268934</a><br>: </p>
+<blockquote>
+<p>liunx操心系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。为了保证用户进程不能直接操作内核，保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。每个进程可以通过系统调用进入内核，因此，Linux内核由系统内的所有进程共享。</p>
+<blockquote>
+<p>在计算机中，系统调用（英语：system call），又称为系统呼叫，指运行在使用者空间的程序向操作系统内核请求需要更高权限运行的服务。系统调用提供用户程序与操作系统之间的接口。大多数系统交互式操作需求在内核态执行。如设备IO操作或者进程间通信。</p>
+</blockquote>
+</blockquote>
+<h3 id="IO分类"><a href="#IO分类" class="headerlink" title="IO分类"></a>IO分类</h3><p><strong>整段摘自</strong>: <a href="http://yanan0628.iteye.com/blog/2268934" target="_blank" rel="external">http://yanan0628.iteye.com/blog/2268934</a></p>
+<ul>
+<li>blocking IO        阻塞IO </li>
+<li>nonblocking IO     非阻塞IO</li>
+<li>IO multiplexing    非阻塞多路复用IO</li>
+<li>asynchronous IO    异步IO</li>
+</ul>
+<p>对于一个network IO 会经历两个阶段，一个是调用这个IO的process (or thread)，另一个就是系统内核(kernel)：</p>
+<ol>
+<li>等待数据准备 (Waiting for the data to be ready)</li>
+<li>将数据从内核拷贝到进程中 (Copying the data from the kernel to the process)</li>
+</ol>
+<h4 id="blocking-IO"><a href="#blocking-IO" class="headerlink" title="blocking IO"></a>blocking IO</h4><p>Linux默认所有socket都是bloking的，典型操作流程如下:</p>
+<p><img src="http://hi.csdn.net/attachment/201007/31/0_1280550787I2K8.gif" alt="block io modle"></p>
+<ol>
+<li>当用户进程调用了recvfrom这个系统调用，kernel就开始了IO的第一个阶段：准备数据。(用户态切换到内核态-准备数据)</li>
+<li>对于network io来说，很多时候数据在一开始还没有到达，这个时候kernel就要等待足够的数据到来。而在用户进程这边，整个进程会被阻塞。(用户态-阻塞，内核态-准备数据中)</li>
+<li>当kernel一直等到数据准备好了，它就会将数据从kernel中拷贝到用户内存，然后kernel返回结果(用户态-阻塞，内核态-拷贝数据到用户进程)</li>
+<li>用户进程才解除block的状态，重新运行起来。(用户态-解除阻塞，内核态-数据返回完毕)</li>
+</ol>
+<p><strong>特点</strong>：</p>
+<pre><code>blocking IO的特点就是在IO执行的两个阶段都被block了。
+</code></pre><h4 id="non-blocking-IO"><a href="#non-blocking-IO" class="headerlink" title="non-blocking IO"></a>non-blocking IO</h4><p>linux下，可以通过设置 socket 的 bloking falg 为 0 使其变为non-blocking。其流程如下：</p>
+<p><img src="http://hi.csdn.net/attachment/201007/31/0_128055089469yL.gif" alt="non-block io modle"></p>
+<ol>
+<li>当用户进程发出read操作时，如果kernel中的数据还没有准备好，那么它并不会block用户进程，而是立刻返回一个error。(用户态 不阻塞——内核态-准备数据中)</li>
+<li>从用户进程角度讲 ，它发起一个read操作后，并不需要等待，而是用户进程马上获取结果，如果结果是error，它就知道数据还没有准备好，于是它可以再次发送read操作。(用户态 不阻塞——-内核态-准备数据中)</li>
+<li>一旦kernel中的数据准备好了，并且又再次收到了用户进程的system call，那么它马上就将数据拷贝到了用户内存，然后返回。(用户态 进入阻塞—–内核态-拷贝数据回进程)</li>
+</ol>
+<p><strong>特点</strong>：</p>
+<pre><code>用户进程其实是需要不断的主动询问kernel数据好了没有。
+</code></pre><h4 id="IO-multiplexing"><a href="#IO-multiplexing" class="headerlink" title="IO multiplexing"></a>IO multiplexing</h4><p>IO multiplexing使用select，epoll机制，select/epoll的好处就在于单个process就可以同时处理多个网络连接的IO。它的基本原理就是select/epoll这个function会不断的轮询所负责的所有socket，当某个socket有数据到达了，就通知用户进程(通过listener监听)。它的流程如图：</p>
+<p><img src="http://hi.csdn.net/attachment/201007/31/0_1280551028YEeQ.gif" alt="multiplexing io model"></p>
+<ol>
+<li>当用户进程调用了select，那么整个进程会被block，而同时，kernel会“监视”所有select负责的socket，当任何一个socket中的数据准备好了，select就会返回。(用户态-阻塞，内核态-准备数据中并通知)</li>
+<li>这个时候用户进程再调用read操作，将数据从kernel拷贝到用户进程。(用户态-阻塞，内核态-拷贝数据会用户进程)</li>
+</ol>
+<p><strong>特点</strong>：</p>
+<pre><code>这里需要使用两个system call (select 和 recvfrom)，而blocking IO只调用了一个
+system call (recvfrom)。但是，用select的优势在于它可以同时处理多个connection
+</code></pre><hr>
+<h2 id="ioloop"><a href="#ioloop" class="headerlink" title="ioloop"></a>ioloop</h2><p><code>Tornado</code> 的 ioloop 藉由类似<code>ioloop.IOLoop.current().start()</code>的代码启动，<code>IOLoop</code> 类继承自<code>Configurable</code>类，所以从 <code>Configureable</code>类开始。</p>
+<h3 id="Configurable"><a href="#Configurable" class="headerlink" title="Configurable"></a>Configurable</h3><p><code>tornado.util.Configureable</code> 被定义为<code>interface</code>，部分方法由子类实现的。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Configurable</span><span class="params">(object)</span>:</span>   </span><br><span class="line">    __impl_class = <span class="keyword">None</span></span><br><span class="line">    __impl_kwargs = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__new__</span><span class="params">(cls, **kwargs)</span>:</span></span><br><span class="line">        <span class="comment"># IOLoop 返回 IOLoop</span></span><br><span class="line">        base = cls.configurable_base()  </span><br><span class="line">        args = &#123;&#125;</span><br><span class="line">        <span class="keyword">if</span> cls <span class="keyword">is</span> base:</span><br><span class="line">            <span class="comment"># IOLoop 会从configured_default()中得出，所以 impl 在Linux中是 EPollIOLoop</span></span><br><span class="line">            impl = cls.configured_class() </span><br><span class="line">            <span class="keyword">if</span> base.__impl_kwargs:</span><br><span class="line">                args.update(base.__impl_kwargs)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            impl = cls</span><br><span class="line">        args.update(kwargs)</span><br><span class="line">        instance = super(Configurable, cls).__new__(impl)</span><br><span class="line">        instance.initialize(**args) <span class="comment"># 需要子类去实现</span></span><br><span class="line">        <span class="keyword">return</span> instance</span><br><span class="line">	</span><br><span class="line">    <span class="comment"># 这个类方法在IOLoop中具体实现</span></span><br><span class="line"><span class="decorator">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">configurable_base</span><span class="params">(cls)</span>:</span></span><br><span class="line">    	<span class="keyword">raise</span> NotImplementedError()</span><br><span class="line">	</span><br><span class="line">	 <span class="comment"># 这个类方法在IOLoop中也有实现</span></span><br><span class="line"><span class="decorator">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">configurable_default</span><span class="params">(cls)</span>:</span></span><br><span class="line">        <span class="keyword">raise</span> NotImplementedError()</span><br><span class="line"></span><br><span class="line"><span class="decorator">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">configure</span><span class="params">(cls, impl, **kwargs)</span>:</span></span><br><span class="line">        base = cls.configurable_base()</span><br><span class="line">        <span class="keyword">if</span> isinstance(impl, (unicode_type, bytes_type)):</span><br><span class="line">            impl = import_object(impl)</span><br><span class="line">        <span class="keyword">if</span> impl <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> <span class="keyword">not</span> issubclass(impl, cls):</span><br><span class="line">            <span class="keyword">raise</span> ValueError(<span class="string">"Invalid subclass of %s"</span> % cls)</span><br><span class="line">        base.__impl_class = impl</span><br><span class="line">        base.__impl_kwargs = kwargs</span><br><span class="line"></span><br><span class="line"><span class="decorator">    @classmethod</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">configured_class</span><span class="params">(cls)</span>:</span></span><br><span class="line">        base = cls.configurable_base()</span><br><span class="line">        <span class="keyword">if</span> cls.__impl_class <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">            base.__impl_class = cls.configurable_default()</span><br><span class="line">        <span class="keyword">return</span> base.__impl_class</span><br></pre></td></tr></table></figure>
+<p>只需要注意<code>__new__</code>是如何创建实例对象的，<code>IOLoop</code>通过这个步骤创建了子类的实例对象。</p>
+<h3 id="IOLoop"><a href="#IOLoop" class="headerlink" title="IOLoop"></a>IOLoop</h3><p>简单介绍 IOLoop 方法的作用</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line">class IOLoop(Configurable):</span><br><span class="line">    NONE = 0</span><br><span class="line">    READ = _EPOLLIN                # fd可读事件</span><br><span class="line">    WRITE = _EPOLLOUT              # fd可写事件</span><br><span class="line">    ERROR = _EPOLLERR | _EPOLLHUP  # 错误事件</span><br><span class="line">    </span><br><span class="line">    _instance_lock = threading.Lock() </span><br><span class="line">    _current = threading.local()</span><br><span class="line">    </span><br><span class="line">    @static</span><br><span class="line">    def instance():</span><br><span class="line">        """ 返回全局 _instance 对象，没有就新建一个返回"""</span><br><span class="line">         </span><br><span class="line">    @staticmethod</span><br><span class="line">    def initialized():</span><br><span class="line">        """ IOLoop 单例是否存在 """"</span><br><span class="line">         </span><br><span class="line">    def install(self):</span><br><span class="line">       """ 当前实例注册为全局 _instance """</span><br><span class="line">         </span><br><span class="line">    @staticmethod</span><br><span class="line">    def clear_instance():</span><br><span class="line">        """ 删除当前全局IOLoop实例 """</span><br><span class="line">         </span><br><span class="line">    @staticmethod</span><br><span class="line">    def current():</span><br><span class="line">        """ 返回当前线程全局IOLoop实例 """</span><br><span class="line">         </span><br><span class="line">    def make_current(self):</span><br><span class="line">        """ 当前实例注册为当前线程全局IOLoop实例 """</span><br><span class="line">         </span><br><span class="line">    def clear_current(self):</span><br><span class="line">        """ 清楚当前线程全局IOLoop实例 """</span><br><span class="line">         </span><br><span class="line">    def run_sync(self, func, timeout=None):</span><br><span class="line">        """ """</span><br><span class="line">        # Python 不支持闭包里修改上级作用域变量，所以为了让</span><br><span class="line">        # 闭包函数在被调用时能修改上级作用域变量，使用可变类型，比如list</span><br><span class="line">        future_cell = [None] </span><br><span class="line"></span><br><span class="line">        def run():</span><br><span class="line">            try:</span><br><span class="line">                result = func() # 返回一个还没有result的Future </span><br><span class="line">            except Exception:</span><br><span class="line">                future_cell[0] = TracebackFuture()</span><br><span class="line">                future_cell[0].set_exc_info(sys.exc_info())</span><br><span class="line">            else:</span><br><span class="line">                if is_future(result):</span><br><span class="line">                    future_cell[0] = result # 修改 future_cell</span><br><span class="line">                else:</span><br><span class="line">                    future_cell[0] = TracebackFuture()</span><br><span class="line">                    future_cell[0].set_result(result)</span><br><span class="line">            self.add_future(future_cell[0], lambda future: self.stop()) # 最后会停下 </span><br><span class="line">        self.add_callback(run) # 加入到IOLoop的callbacks，在轮询中会被调用</span><br><span class="line">        if timeout is not None:</span><br><span class="line">            timeout_handle = self.add_timeout(self.time() + timeout, self.stop)</span><br><span class="line">        self.started() # 开始轮询</span><br><span class="line">        if timeout is not None:</span><br><span class="line">            self.remove_timeout(timeout_handle)</span><br><span class="line">        if not future_cell[0].done():</span><br><span class="line">            raise TimeoutError('Operation timed out after %s seconds' % timeout)</span><br><span class="line">        return future_cell[0].result()</span><br><span class="line"></span><br><span class="line">    def add_timeout(self, deadline, callback, *args, **kwargs):</span><br><span class="line">        """ callbakc 函数会在deadline的时间点被 i/o loop 调用,</span><br><span class="line">        	  这个方法服务于 `call_later` 和 `call_at`</span><br><span class="line">        """</span><br><span class="line">         </span><br><span class="line">    def call_later(self, delay, callback, *args, **kwargs):</span><br><span class="line">        """ delay 是 time.deltatime 类型, 延迟调用 """</span><br><span class="line">         </span><br><span class="line">    def call_at(self, when, callback, *args, **kwargs):</span><br><span class="line">        """ 在某个时间点调用 """</span><br><span class="line">         </span><br><span class="line">    def add_future(self, future, callback):</span><br><span class="line">        """重点方法，遍布整个Tornado，`future.add_done_callback`</span><br><span class="line">           保证了future有result了才会将callback加入到 I/O loop 中</span><br><span class="line">        """</span><br><span class="line">        assert is_future(future)</span><br><span class="line">        callback = stack_context.wrap(callback)</span><br><span class="line">        future.add_done_callback(</span><br><span class="line">            lambda future: self.add_callback(callback, future))</span><br><span class="line">    </span><br><span class="line">    def _run_callback(self, callback):</span><br><span class="line">        """ 调用callback, 如果是future 就 add_future</span><br><span class="line">            不是就返回结果</span><br><span class="line">        """</span><br><span class="line">         </span><br><span class="line">    def split_fd(self, fd):</span><br><span class="line">        """ fd 是socket 对象，返回 fd.fileno() 和 fd对象 """</span><br><span class="line">         </span><br><span class="line">    def close_fd(self, fd):</span><br><span class="line">        """ 关闭 fd """</span><br></pre></td></tr></table></figure>
+<p><code>add_future</code>很简单，就是给<code>Future</code>增加回调函数，在<code>Future</code>有result之后这些回调便会被执行。</p>
+<p><code>run_sync</code>正如它的函数名的一样，同步执行一个函数<code>func</code>，它也会开启 IO Loop，但在<code>func</code>结束后 IO Loop 也会停止。</p>
+<p>实际上，<code>IOLoop._instance</code>是它的子类实例对象，在 Linux 中是<code>EpollIOLoop</code>，<code>EpollIOLoop</code>除了在初始化时设置<code>_impl</code>是<code>select.epoll</code>实例对象外，和它的父类并无却别:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PollIOLoop</span><span class="params">(IOLoop)</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">initialize</span><span class="params">(self, impl, time_func=None)</span>:</span></span><br><span class="line">        super(PollIOLoop, self).initialize()</span><br><span class="line">        self._impl = impl <span class="comment"># 标准库 select.epoll 实例对象</span></span><br><span class="line">        <span class="keyword">if</span> hasattr(self._impl, <span class="string">'fileno'</span>):</span><br><span class="line">            set_close_exec(self._impl.fileno())</span><br><span class="line">        self.time_func = time_func <span class="keyword">or</span> time.time</span><br><span class="line">        self._handlers = &#123;&#125;</span><br><span class="line">        self._events = &#123;&#125;</span><br><span class="line">        self._callbacks = []</span><br><span class="line">        self._callback_lock = threading.Lock()</span><br><span class="line">        self._timeouts = [] <span class="comment"># _Timouts 实例对象集合，根据timeout的时间点以最小堆形式存储</span></span><br><span class="line">        self._cancellations = <span class="number">0</span></span><br><span class="line">        self._running = <span class="keyword">False</span></span><br><span class="line">        self._stopped = <span class="keyword">False</span></span><br><span class="line">        self._closing = <span class="keyword">False</span></span><br><span class="line">        self._thread_ident = <span class="keyword">None</span></span><br><span class="line">        self._blocking_signal_threshold = <span class="keyword">None</span></span><br><span class="line">        self._timeout_counter = itertools.count()</span><br><span class="line"></span><br><span class="line">        <span class="comment"># Create a pipe that we send bogus data to when we want to wake</span></span><br><span class="line">        <span class="comment"># the I/O loop when it is idle</span></span><br><span class="line">        self._waker = Waker() <span class="comment"># socket包装，保证跨平台性良好</span></span><br><span class="line">        <span class="comment"># read fd</span></span><br><span class="line">        self.add_handler(self._waker.fileno(), </span><br><span class="line">                         <span class="keyword">lambda</span> fd, events: self._waker.consume(),  </span><br><span class="line">                         self.READ)</span><br><span class="line">                         </span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">close</span><span class="params">(self, all_fds=False)</span>:</span></span><br><span class="line">       <span class="string">""" 清理和关闭 """</span></span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">add_handler</span><span class="params">(self, fd, handler, events)</span>:</span></span><br><span class="line">       <span class="string">""" 给 fd 添加对应的 handler,</span><br><span class="line">       	 给 fd 注册相应的事件</span><br><span class="line">       """</span></span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">remove_handler</span><span class="params">(self, fd)</span>:</span></span><br><span class="line">       <span class="string">""" 删除对应的 handler 和 event"""</span></span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">set_blocking_signal_threshold</span><span class="params">(self, seconds, action)</span>:</span></span><br><span class="line">       <span class="string">"""如果IOLoop阻塞超过 seconds 秒，发送信号，action是singal_handler"""</span></span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">set_blocking_log_threshold</span><span class="params">(self, seconds)</span>:</span></span><br><span class="line">       <span class="string">"""调用set_blocking_signal_threshold，singal_handler用于记录回溯栈信息"""</span></span><br><span class="line">   </span><br><span class="line">   <span class="function"><span class="keyword">def</span> <span class="title">start</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">if</span> self._running:</span><br><span class="line">            <span class="keyword">raise</span> RuntimeError(<span class="string">"IOLoop is already running"</span>)</span><br><span class="line">        <span class="comment"># 设置logging</span></span><br><span class="line">        self._setup_logging()</span><br><span class="line">        <span class="keyword">if</span> self._stopped:</span><br><span class="line">            self._stopped = <span class="keyword">False</span></span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        <span class="comment"># 确保线程全局IOLoop _instance 是当前实例对象</span></span><br><span class="line">        old_current = getattr(IOLoop._current, <span class="string">"instance"</span>, <span class="keyword">None</span>) </span><br><span class="line">        IOLoop._current.instance = self</span><br><span class="line">        self._thread_ident = thread.get_ident()</span><br><span class="line">        self._running = <span class="keyword">True</span></span><br><span class="line">        </span><br><span class="line">        old_wakeup_fd = <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">if</span> hasattr(signal, <span class="string">'set_wakeup_fd'</span>) <span class="keyword">and</span> os.name == <span class="string">'posix'</span>:</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                old_wakeup_fd = signal.set_wakeup_fd(self._waker.write_fileno())</span><br><span class="line">                <span class="keyword">if</span> old_wakeup_fd != -<span class="number">1</span>: <span class="comment"># 如果-1</span></span><br><span class="line">                    signal.set_wakeup_fd(old_wakeup_fd)</span><br><span class="line">                    old_wakeup_fd = <span class="keyword">None</span></span><br><span class="line">            <span class="keyword">except</span> ValueError:  <span class="comment"># non-main thread</span></span><br><span class="line">                <span class="keyword">pass</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">                <span class="keyword">with</span> self._callback_lock:</span><br><span class="line">                    callbacks = self._callbacks</span><br><span class="line">                    self._callbacks = [] <span class="comment"># 置空以免重复</span></span><br><span class="line">                </span><br><span class="line">                due_timeouts = [] <span class="comment"># 到期了的延迟回调</span></span><br><span class="line">                <span class="keyword">if</span> self._timeouts:</span><br><span class="line">                    now = self.time() </span><br><span class="line">                    <span class="keyword">while</span> self._timeouts:</span><br><span class="line">                        <span class="keyword">if</span> self._timeouts[<span class="number">0</span>].callback <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">                            heapq.heappop(self._timeouts) <span class="comment"># 取出最小timeout</span></span><br><span class="line">                            self._cancellations -= <span class="number">1</span></span><br><span class="line">                        <span class="keyword">elif</span> self._timeouts[<span class="number">0</span>].deadline &lt;= now:</span><br><span class="line">                            due_timeouts.append(heapq.heappop(self._timeouts))</span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            <span class="keyword">break</span></span><br><span class="line">                    <span class="keyword">if</span> (self._cancellations &gt; <span class="number">512</span></span><br><span class="line">                            <span class="keyword">and</span> self._cancellations &gt; (len(self._timeouts) &gt;&gt; <span class="number">1</span>)):</span><br><span class="line">                        self._cancellations = <span class="number">0</span></span><br><span class="line">                        self._timeouts = [x <span class="keyword">for</span> x <span class="keyword">in</span> self._timeouts</span><br><span class="line">                                          <span class="keyword">if</span> x.callback <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>]</span><br><span class="line">                        heapq.heapify(self._timeouts)</span><br><span class="line">                <span class="comment"># 执行加到 IO loop 里的 callbacks</span></span><br><span class="line">                <span class="keyword">for</span> callback <span class="keyword">in</span> callbacks:</span><br><span class="line">                    self._run_callback(callback) <span class="comment"># 如果这里阻塞了呢</span></span><br><span class="line">                <span class="keyword">for</span> timeout <span class="keyword">in</span> due_timeouts:</span><br><span class="line">                    <span class="keyword">if</span> timeout.callback <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                        self._run_callback(timeout.callback) <span class="comment"># timeout 触发回调</span></span><br><span class="line">                callbacks = callback = due_timeouts = timeout = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> self._callbacks:</span><br><span class="line">                    poll_timeout = <span class="number">0.0</span></span><br><span class="line">                <span class="keyword">elif</span> self._timeouts:</span><br><span class="line">                    poll_timeout = self._timeouts[<span class="number">0</span>].deadline - self.time()</span><br><span class="line">                    poll_timeout = max(<span class="number">0</span>, min(poll_timeout, _POLL_TIMEOUT))</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    poll_timeout = _POLL_TIMEOUT</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> <span class="keyword">not</span> self._running:</span><br><span class="line">                    <span class="keyword">break</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> self._blocking_signal_threshold <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                    signal.setitimer(signal.ITIMER_REAL, <span class="number">0</span>, <span class="number">0</span>) <span class="comment"># 清除定时信号</span></span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    event_pairs = self._impl.poll(poll_timeout) <span class="comment"># 查看就绪fd列表</span></span><br><span class="line">                <span class="keyword">except</span> Exception <span class="keyword">as</span> e:</span><br><span class="line">                    <span class="keyword">if</span> errno_from_exception(e) == errno.EINTR:</span><br><span class="line">                        <span class="keyword">continue</span></span><br><span class="line">                    <span class="keyword">else</span>:</span><br><span class="line">                        <span class="keyword">raise</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> self._blocking_signal_threshold <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                    signal.setitimer(signal.ITIMER_REAL,</span><br><span class="line">                                     self._blocking_signal_threshold, <span class="number">0</span>) <span class="comment"># 设置定时信号</span></span><br><span class="line">                self._events.update(event_pairs)</span><br><span class="line">                <span class="keyword">while</span> self._events:</span><br><span class="line">                    fd, events = self._events.popitem() </span><br><span class="line">                    <span class="keyword">try</span>:</span><br><span class="line">                        fd_obj, handler_func = self._handlers[fd]</span><br><span class="line">                        handler_func(fd_obj, events) <span class="comment"># 拿AsyncHttpClient为例，注册的handler_func就是从就绪的fd里读数据</span></span><br><span class="line">                    <span class="keyword">except</span> (OSError, IOError) <span class="keyword">as</span> e:</span><br><span class="line">                        <span class="keyword">if</span> errno_from_exception(e) == errno.EPIPE:</span><br><span class="line">                            <span class="keyword">pass</span></span><br><span class="line">                        <span class="keyword">else</span>:</span><br><span class="line">                            self.handle_callback_exception(self._handlers.get(fd))</span><br><span class="line">                    <span class="keyword">except</span> Exception:</span><br><span class="line">                        self.handle_callback_exception(self._handlers.get(fd))</span><br><span class="line">                fd_obj = handler_func = <span class="keyword">None</span> <span class="comment"># 置空</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">finally</span>:</span><br><span class="line">            self._stopped = <span class="keyword">False</span></span><br><span class="line">            <span class="keyword">if</span> self._blocking_signal_threshold <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                signal.setitimer(signal.ITIMER_REAL, <span class="number">0</span>, <span class="number">0</span>)</span><br><span class="line">            IOLoop._current.instance = old_current</span><br><span class="line">            <span class="keyword">if</span> old_wakeup_fd <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                signal.set_wakeup_fd(old_wakeup_fd)</span><br></pre></td></tr></table></figure>
+<p><code>IOLoop.start</code>方法正式开启了 IO loop 的过程，以 Linux 环境 epoll 为例。在 Tornado 程序里，使用 <code>IOLoop.add_handler</code> 方法来注册要监听的 fd 所关心的事件<code>(read, write等)</code>，并记录 fd 和对应的 <code>handler_func</code> 以便在 fd 就绪后去做下一步的处理。 当 fd 就绪以后，epoll 会将它放到对应的就绪列表，而调用<code>poll()</code>方法就可以获取到已经就绪的 fd 和 event 了。这些 fd 和 event 会被存放在类型是<code>dict</code>的<code>IOLoop._events</code>里。之后遍历<code>IOLoop._events</code>，并调用相关的<code>handle_func</code>函数，大多数情况下会包含<code>fd.recvfrom</code>之类的从 fd 读取数据的过程，如果你使用了 Tornado 中的异步方法，那还应该有<code>Future.set_result</code>等相关步骤。</p>
+<p>顺便要提的是，在每次<code>epoll.poll</code>之前，IOLoop 都会去执行那些已经注册的回调函数(<code>IOLoop._callbacks</code>)，以及检查和执行 timeout 了的延迟回调(<code>_Timeout</code>)。而这个的过程是这样的:</p>
+<pre><code>for callback in callbacks:
+    self._run_callback(callback)
+</code></pre><p>就如看到的那样，这是个同步过程，也就是说不适合加入非 IO 型耗时或者非异步型 IO 的 callback, 所以<code>IOLoop.add_callback</code>要小心，不然的话可能会导致整个 IO loop 阻塞住。</p>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Tornado/" rel="tag">#Tornado</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/22/Tornado源码分析系列之一-gen/" rel="next" title="Tornado源码分析(一): gen">
+                <i class="fa fa-chevron-left"></i> Tornado源码分析(一): gen
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://ww3.sinaimg.cn/large/8eb3c606jw8e30umhfk5kj.jpg"
+               alt="remones" />
+          <p class="site-author-name" itemprop="name">remones</p>
+          <p class="site-description motion-element" itemprop="description">Programer | Pythoner | Shameless</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#同步和异步"><span class="nav-number">1.1.</span> <span class="nav-text">同步和异步</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#阻塞和非阻塞"><span class="nav-number">1.2.</span> <span class="nav-text">阻塞和非阻塞</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#并发和并行"><span class="nav-number">1.3.</span> <span class="nav-text">并发和并行</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux内核态和用户态"><span class="nav-number">2.</span> <span class="nav-text">Linux内核态和用户态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IO分类"><span class="nav-number">3.</span> <span class="nav-text">IO分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#blocking-IO"><span class="nav-number">3.1.</span> <span class="nav-text">blocking IO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#non-blocking-IO"><span class="nav-number">3.2.</span> <span class="nav-text">non-blocking IO</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#IO-multiplexing"><span class="nav-number">3.3.</span> <span class="nav-text">IO multiplexing</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ioloop"><span class="nav-number"></span> <span class="nav-text">ioloop</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Configurable"><span class="nav-number">1.</span> <span class="nav-text">Configurable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IOLoop"><span class="nav-number">2.</span> <span class="nav-text">IOLoop</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">remones</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+
+  
+  
+
+
+</body>
+</html>

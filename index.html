@@ -219,8 +219,97 @@
             
               
                 
+                <a class="post-title-link" href="/2016/02/23/Tornado源码分析-二-ioloop/" itemprop="url">
+                  'Tornado源码分析(二): ioloop
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-02-23T21:40:31+08:00" content="2016-02-23">
+              2016-02-23
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>在剖析 ioloop 的实现代码之前，有一些 I/O 中常出现的概念需要清楚。简单复习和归纳一下几个名词的含义。</p>
+<h4 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a>同步和异步</h4><p>同步和异步的区别表现在程序执行的方式上。同步就是顺序执行，一件事干完了才能继续另一件事，这个不多说了，主要是对异步的理解。</p>
+<p>举个例子，如果你想发送一封邮件, 首先你需要这样做</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mail_client = smtp.connect() <span class="comment"># 和邮件服务端建立连接</span></span><br><span class="line">mail_client.send_mail(mailto) <span class="comment"># 发送邮件</span></span><br><span class="line">do_otherthing()</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/02/23/Tornado源码分析-二-ioloop/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/02/22/Tornado源码分析系列之一-gen/" itemprop="url">
-                  Tornado源码分析系列之一: gen
+                  Tornado源码分析(一): gen
                 </a>
               
             
@@ -260,28 +349,14 @@
 
       
         
-          
-            <p>Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也十分好奇和感兴趣，所以在阅读了一些源码之后也试着整理思路简单分析一下。</p>
-<p>先从一个简单的例子开始:</p>
+          <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也感到很好奇，在自己阅读几遍源码之后也试着整理思路简单分析一下。</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>先从一个简单的例子开始:</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">from</span> tornado.ioloop <span class="keyword">import</span> IOLoop</span><br><span class="line"><span class="keyword">from</span> tornado <span class="keyword">import</span> gen</span><br><span class="line"><span class="keyword">from</span> tornado.httpclient <span class="keyword">import</span> AsyncHTTPClient</span><br><span class="line"></span><br><span class="line"><span class="decorator">@gen.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch_url</span><span class="params">(url)</span>:</span></span><br><span class="line">    http_client = AsyncHTTPClient()</span><br><span class="line">    response = <span class="keyword">yield</span> http_client.fetch(url)</span><br><span class="line">    <span class="keyword">raise</span> gen.Return(response.body)</span><br><span class="line">    </span><br><span class="line"><span class="decorator">@gen.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    url = <span class="string">'http://httpbin.org/get'</span></span><br><span class="line">    content = <span class="keyword">yield</span> fetch_url(url)</span><br><span class="line">    print(content)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    ioloop = IOLoop.instance()</span><br><span class="line">    ioloop.run_sync(main)</span><br></pre></td></tr></table></figure>
-<p>这段代码的神奇之处在于被<code>gen.coroutine</code>修饰的函数内部, 凡是需要异步调用的过程只需加上 <code>yield</code>，就能让获取异步执行的结果看起来和”赋值”一样简单。</p>
-<p>这种实现带来了非常赞的效果:</p>
-<ul>
-<li>代码流程和同步写法近似（多个 yield </li>
-<li>不用在各种回调函数里跳来跳去</li>
-<li>可以<code>yield</code> <strong>list</strong> 和 <strong>dict</strong>，来达到类似map()的效果</li>
-</ul>
-<p>为了探究<code>gen.coroutine</code>究竟用了什么幺蛾子方法，先来看看它的代码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 原来只是调用了 _make_coroutine_wrapper</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">coroutine</span><span class="params">(func, replace_callback=True)</span>:</span></span><br><span class="line">    <span class="keyword">return</span> _make_coroutine_wrapper(func, replace_callback=<span class="keyword">True</span>)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_make_coroutine_wrapper</span><span class="params">(func, replace_callback)</span>:</span></span><br><span class="line"><span class="decorator">    @functools.wraps(func)</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        future = TracebackFuture()</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            result = func(*args, **kwargs) </span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            future.set_exc_info(sys.exc_info())</span><br><span class="line">            ...</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">              <span class="keyword">if</span> isinstance(result, types.GeneratorType):</span><br><span class="line">                  <span class="keyword">try</span>:</span><br><span class="line">                      yielded = next(result)</span><br><span class="line">                <span class="keyword">except</span> (StopIteration, Return) <span class="keyword">as</span> e:</span><br><span class="line">                    future.set_result(getattr(e, <span class="string">'value'</span>, <span class="keyword">None</span>))</span><br><span class="line">                  <span class="keyword">except</span>:</span><br><span class="line">                      future.set_exc_info(sys.exc_info())</span><br><span class="line">                  <span class="keyword">else</span>:</span><br><span class="line">                      Runner(result, future, yielded)</span><br><span class="line">         ....</span><br><span class="line">         future.set_result(result)</span><br><span class="line">         <span class="keyword">return</span> future</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br></pre></td></tr></table></figure>
-<p>这是精简之后的主要流程代码，result 是被装饰的函数返回的生成器, future 是 <code>TracebackTrue</code> 类对象，顾名思义用来记录执行过程中可能出现的异常, <code>next(result)</code>启动生成器，并返回一个<code>Future</code>，如果生成器迭代结束，设置函数返回值，不然就进入到<code>Runner</code>中。</p>
-<p><code>Runner</code>这个类有两个主要的方法<code>handled_yield</code>和<code>run</code>，在它的<code>__init__</code>函数里除了对象属性赋值外，最后有个判断执行<code>handle_yield</code>方法的过程。代码如下</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, gen, result_future, first_yielded)</span>:</span></span><br><span class="line">    self.gen = gen</span><br><span class="line">    self.result_future = result_future</span><br><span class="line">    self.future = _null_future</span><br><span class="line">    self.io_loop = IOLoop.current()</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> self.handle_yield(first_yielded):</span><br><span class="line">        self.run()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handle_yield</span><span class="params">(self, yielded)</span>:</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">elif</span> is_future(yielded):</span><br><span class="line">        self.future = yielded</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.future.done() <span class="keyword">or</span> self.future <span class="keyword">is</span> moment:</span><br><span class="line">            self.io_loop.add_future(</span><br><span class="line">                self.future, <span class="keyword">lambda</span> f: self.run())</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">False</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
-<p>来分析<code>handled_yiled</code>的执行过程。回到前面给出的实例代码 <code>response = yield http_client.fetch(url)</code>，在执行到这句时，<code>http_client.fetch(url)</code> 其实会返回一个 <code>Future</code> 对象，所以在<code>handled_yield</code>中，保存这个值的变量<code>yielded</code>经过条件判断，会被<code>io_loop</code>加入到外层的事件循环中等待处理，并将<code>self.run</code>注册为它的回调函数，然后返回 False，等到<code>Future</code>有结果时，就会调用相应的回调函数去处理它。而如果此时<code>Future</code>已经有结果准备好了，会返回 True 并立刻执行<code>self.run</code>。所以接下来再来看看这个 <code>self.run</code> 又做了哪些工作</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span><span class="params">(self)</span>:</span></span><br><span class="line">    ...</span><br><span class="line">    self.running = <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">while</span> <span class="keyword">True</span>:</span><br><span class="line">        future = self.future</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> future.done():</span><br><span class="line">            <span class="keyword">return</span></span><br><span class="line">        self.future = <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            orig_stack_contexts = stack_context._state.contexts</span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                value = future.result()</span><br><span class="line">            <span class="keyword">except</span> Exception:</span><br><span class="line">                self.had_exception = <span class="keyword">True</span></span><br><span class="line">                yielded = self.gen.throw(*sys.exc_info()</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                yielded = self.gen.send(value)</span><br><span class="line">        <span class="keyword">except</span> (StopIteration, Return) <span class="keyword">as</span> e:</span><br><span class="line">            self.result_future.set_result(getattr(e, <span class="string">'value'</span>, <span class="keyword">None</span>))</span><br><span class="line">        <span class="keyword">except</span> Exception:</span><br><span class="line">            ...</span><br><span class="line">        <span class="keyword">if</span> <span class="keyword">not</span> self.handle_yield(yielded):</span><br><span class="line">            <span class="keyword">return</span></span><br></pre></td></tr></table></figure>
-<p>根据<code>While True</code>部分的代码，很容易看出<code>self.run</code> 其实就是不断从有结果的<code>Future</code>对象中将结果取出，发送到生成器内部，再继续执行<code>handled_yield</code>，这个过程会一直持续下去，直到生成器迭代结束，最终设置函数返回值。</p>
-<p>整个大体的思路流程就是这样，当然其实对一些技术实现的细节选择了跳过，有兴趣继续深入阅读 Tornado 源码。</p>
-
-          
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/02/22/Tornado源码分析系列之一-gen/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
         
       
     </div>
@@ -342,7 +417,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-count">2</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
