@@ -41,7 +41,7 @@
 <link href="/css/main.css?v=5.0.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Tornado," />
 
 
 
@@ -57,15 +57,22 @@
 
 
 
-<meta name="description" content="Programer | Pythoner | Shameless">
-<meta property="og:type" content="website">
-<meta property="og:title" content="remones note">
-<meta property="og:url" content="http://remones.me/index.html">
+<meta name="description" content="引言Tornado里stack_context模块是用于解决异步函数调用时上下文不一致的问题的。
+StackContext一般的异步程序，像下面这样是无法捕捉到cb_func发生的异常的。因为callback是先注册添加的，在异步函数有结果时才会去执行callback，而那时callback与注册它的异步函数已经不处在同一上下文中了。
+1234try:    async_func(args, ca">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tornado源码分析(三): stack_context">
+<meta property="og:url" content="http://remones.me/2016/02/28/Tornado源码分析-三-stack-context/index.html">
 <meta property="og:site_name" content="remones note">
-<meta property="og:description" content="Programer | Pythoner | Shameless">
+<meta property="og:description" content="引言Tornado里stack_context模块是用于解决异步函数调用时上下文不一致的问题的。
+StackContext一般的异步程序，像下面这样是无法捕捉到cb_func发生的异常的。因为callback是先注册添加的，在异步函数有结果时才会去执行callback，而那时callback与注册它的异步函数已经不处在同一上下文中了。
+1234try:    async_func(args, ca">
+<meta property="og:updated_time" content="2016-03-01T17:18:41.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="remones note">
-<meta name="twitter:description" content="Programer | Pythoner | Shameless">
+<meta name="twitter:title" content="Tornado源码分析(三): stack_context">
+<meta name="twitter:description" content="引言Tornado里stack_context模块是用于解决异步函数调用时上下文不一致的问题的。
+StackContext一般的异步程序，像下面这样是无法捕捉到cb_func发生的异常的。因为callback是先注册添加的，在异步函数有结果时才会去执行callback，而那时callback与注册它的异步函数已经不处在同一上下文中了。
+1234try:    async_func(args, ca">
 
 
 
@@ -83,7 +90,7 @@
   };
 </script>
 
-  <title> remones note </title>
+  <title> Tornado源码分析(三): stack_context | remones note </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -100,9 +107,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left 
-   page-home 
- ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -181,15 +186,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
 
+  <div id="posts" class="posts-expand">
     
-
-    
-    
-
-    
-      
 
   
   
@@ -209,10 +208,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/02/28/Tornado源码分析-三-stack-context/" itemprop="url">
-                  Tornado源码分析(三): stack_context
-                </a>
+                Tornado源码分析(三): stack_context
               
             
           </h1>
@@ -250,9 +246,7 @@
       
 
       
-        
-          
-            <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p><code>Tornado</code>里<code>stack_context</code>模块是用于解决异步函数调用时上下文不一致的问题的。</p>
+        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p><code>Tornado</code>里<code>stack_context</code>模块是用于解决异步函数调用时上下文不一致的问题的。</p>
 <h3 id="StackContext"><a href="#StackContext" class="headerlink" title="StackContext"></a>StackContext</h3><p>一般的异步程序，像下面这样是无法捕捉到<code>cb_func</code>发生的异常的。因为<code>callback</code>是先注册添加的，在异步函数有结果时才会去执行<code>callback</code>，而那时<code>callback</code>与注册它的异步函数已经不处在同一上下文中了。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    async_func(args, callback=cb_func)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
 <p>所以如果要对<code>async_func</code>和<code>callback</code>采用统一的异常处理方法，使用<code>contextlib.contextmanager</code>这种机制就能达到目的。用法介绍:</p>
@@ -265,206 +259,45 @@
 <p><code>Tornado</code>里几乎没看到有使用<code>StackContext</code>的地方，所以这个机制只能先大致了解下，具体的使用场景还没怎么熟悉。下面再来说下<code>wrap</code>函数，这个函数是<code>callback</code>函数在执行时能回到注册生成的地方的主要原因</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">wrap</span><span class="params">(fn)</span>:</span></span><br><span class="line">    <span class="comment"># Check if function is already wrapped</span></span><br><span class="line">    <span class="keyword">if</span> fn <span class="keyword">is</span> <span class="keyword">None</span> <span class="keyword">or</span> hasattr(fn, <span class="string">'_wrapped'</span>):</span><br><span class="line">        <span class="keyword">return</span> fn</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Python2.x中，闭包的内部函数只能读取外层变量，并没有写的权限, </span></span><br><span class="line">    <span class="comment"># cap_contexts 使用可变对象将值包裹，这样就能在内部函数被调用时被修改了</span></span><br><span class="line">    cap_contexts = [_state.contexts]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> cap_contexts[<span class="number">0</span>][<span class="number">0</span>] <span class="keyword">and</span> <span class="keyword">not</span> cap_contexts[<span class="number">0</span>][<span class="number">1</span>]:</span><br><span class="line">        <span class="comment"># Fast path when there are no active contexts.</span></span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">null_wrapper</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">            <span class="keyword">try</span>:</span><br><span class="line">                current_state = _state.contexts</span><br><span class="line">                _state.contexts = cap_contexts[<span class="number">0</span>]</span><br><span class="line">                <span class="keyword">return</span> fn(*args, **kwargs)</span><br><span class="line">            <span class="keyword">finally</span>:</span><br><span class="line">                _state.contexts = current_state</span><br><span class="line">        null_wrapper._wrapped = <span class="keyword">True</span></span><br><span class="line">        <span class="keyword">return</span> null_wrapper</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapped</span><span class="params">(*args, **kwargs)</span>:</span></span><br><span class="line">        ret = <span class="keyword">None</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="comment"># 生成闭包时的_state.contexts和调用内部函数时的_state_contexts不是相同的，</span></span><br><span class="line">            <span class="comment"># 因为这两个时间点不一样。cap_contexts保存了生成闭包时的_state，而current_state</span></span><br><span class="line">            <span class="comment"># 是被调用时的。</span></span><br><span class="line">            current_state = _state.contexts</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 移除没激活的StackContext实例对象，以及 old_context 实例属性也要同时修改</span></span><br><span class="line">            cap_contexts[<span class="number">0</span>] = contexts = _remove_deactivated(cap_contexts[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 恢复到闭包生成时，这样就保证了`callback`和注册它的异步函数处于的同样的上下文环境了</span></span><br><span class="line">            _state.contexts = contexts</span><br><span class="line"></span><br><span class="line">            exc = (<span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line">            top = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">            <span class="comment"># 构建栈式操作</span></span><br><span class="line">            last_ctx = <span class="number">0</span></span><br><span class="line">            stack = contexts[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 一层层执行__enter__进入context</span></span><br><span class="line">            <span class="keyword">for</span> n <span class="keyword">in</span> stack:</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    n.enter() </span><br><span class="line">                    last_ctx += <span class="number">1</span></span><br><span class="line">                <span class="keyword">except</span>:</span><br><span class="line">                    <span class="comment"># 有异常的话记录出现异常时的 StackContext </span></span><br><span class="line">                    exc = sys.exc_info()</span><br><span class="line">                    top = n.old_contexts[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># 执行回调函数，有错误的话top就指向当前的StackContext</span></span><br><span class="line">            <span class="keyword">if</span> top <span class="keyword">is</span> <span class="keyword">None</span>:</span><br><span class="line">                <span class="keyword">try</span>:</span><br><span class="line">                    ret = fn(*args, **kwargs)</span><br><span class="line">                <span class="keyword">except</span>:</span><br><span class="line">                    exc = sys.exc_info()</span><br><span class="line">                    top = contexts[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">            <span class="comment"># If there was exception, try to handle it by going through the exception chain</span></span><br><span class="line">            <span class="keyword">if</span> top <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                exc = _handle_exception(top, exc) <span class="comment"># _handle_exception</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># 按入栈顺序逆序出栈</span></span><br><span class="line">                <span class="keyword">while</span> last_ctx &gt; <span class="number">0</span>: </span><br><span class="line">                    last_ctx -= <span class="number">1</span></span><br><span class="line">                    c = stack[last_ctx]</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">try</span>:</span><br><span class="line">                        c.exit(*exc)    </span><br><span class="line">                    <span class="keyword">except</span>:</span><br><span class="line">                        exc = sys.exc_info()</span><br><span class="line">                        top = c.old_contexts[<span class="number">1</span>]</span><br><span class="line">                        <span class="keyword">break</span></span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    top = <span class="keyword">None</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># If if exception happened while unrolling, take longer exception handler path</span></span><br><span class="line">                <span class="keyword">if</span> top <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">                    exc = _handle_exception(top, exc)</span><br><span class="line"></span><br><span class="line">            <span class="comment"># If exception was not handled, raise it</span></span><br><span class="line">            <span class="keyword">if</span> exc != (<span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>):</span><br><span class="line">                raise_exc_info(exc)</span><br><span class="line">        <span class="keyword">finally</span>:</span><br><span class="line">            _state.contexts = current_state</span><br><span class="line">        <span class="keyword">return</span> ret</span><br><span class="line"></span><br><span class="line">    wrapped._wrapped = <span class="keyword">True</span></span><br><span class="line">    <span class="keyword">return</span> wrapped</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_remove_deactivated</span><span class="params">(contexts)</span>:</span></span><br><span class="line">    <span class="string">"""删除_state.context链表中未激活的StackContext"""</span></span><br><span class="line">    stack_contexts = tuple([h <span class="keyword">for</span> h <span class="keyword">in</span> contexts[<span class="number">0</span>] <span class="keyword">if</span> h.active])</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取链表的表头指针</span></span><br><span class="line">    <span class="comment"># 为什么不直接 head = stack_contexts[0][-1] ?</span></span><br><span class="line">    head = contexts[<span class="number">1</span>]</span><br><span class="line">    <span class="keyword">while</span> head <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span> <span class="keyword">and</span> <span class="keyword">not</span> head.active:</span><br><span class="line">        head = head.old_contexts[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 通过将old_context作为节点指针，调整链表中节点的位置，就是链表的删除和连接操作</span></span><br><span class="line">    ctx = head</span><br><span class="line">    <span class="keyword">while</span> ctx <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">        parent = ctx.old_contexts[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> parent <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">            <span class="keyword">if</span> parent.active:</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            ctx.old_contexts = parent.old_contexts</span><br><span class="line">            parent = parent.old_contexts[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">        ctx = parent</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> (stack_contexts, head)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run_with_stack_context</span><span class="params">(context, func)</span>:</span></span><br><span class="line">    <span class="string">"""</span><br><span class="line">        @gen.coroutine</span><br><span class="line">        def incorrect():</span><br><span class="line">            with StackContext(ctx):</span><br><span class="line">                # ERROR: this will raise StackContextInconsistentError</span><br><span class="line">                yield other_coroutine()</span><br><span class="line"></span><br><span class="line">        @gen.coroutine</span><br><span class="line">        def correct():</span><br><span class="line">            # OK</span><br><span class="line">            yield run_with_stack_context(StackContext(ctx), other_coroutine)</span><br><span class="line">    """</span></span><br><span class="line">    <span class="keyword">with</span> context:</span><br><span class="line">        <span class="keyword">return</span> func()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">_handle_exception</span><span class="params">(tail, exc)</span>:</span></span><br><span class="line">    <span class="keyword">while</span> tail <span class="keyword">is</span> <span class="keyword">not</span> <span class="keyword">None</span>:</span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            <span class="comment"># 如果返回 True, 异常处理会继续但是不会在传递到其他 exception handler了</span></span><br><span class="line">            <span class="comment"># 所以 exc = (None, None, None)</span></span><br><span class="line">            <span class="keyword">if</span> tail.exit(*exc):</span><br><span class="line">                exc = (<span class="keyword">None</span>, <span class="keyword">None</span>, <span class="keyword">None</span>)</span><br><span class="line">        <span class="keyword">except</span>:</span><br><span class="line">            exc = sys.exc_info()</span><br><span class="line"></span><br><span class="line">        tail = tail.old_contexts[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> exc</span><br></pre></td></tr></table></figure>
 
-          
-        
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/02/23/Tornado源码分析-二-ioloop/" itemprop="url">
-                  'Tornado源码分析(二): ioloop
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-02-23T21:40:31+08:00" content="2016-02-23">
-              2016-02-23
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-
-          
-            
-          
-
-          
-
-          
+            <a href="/tags/Tornado/" rel="tag">#Tornado</a>
           
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>在剖析 ioloop 的实现代码之前，有一些 I/O 中常出现的概念需要清楚。简单复习和归纳一下几个名词的含义。</p>
-<h4 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a>同步和异步</h4><p>同步和异步的区别表现在程序执行的方式上。同步就是顺序执行，一件事干完了才能继续另一件事，这个不多说了，主要是对异步的理解。</p>
-<p>举个例子，如果你想发送一封邮件, 首先你需要这样做</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mail_client = smtp.connect() <span class="comment"># 和邮件服务端建立连接</span></span><br><span class="line">mail_client.send_mail(mailto) <span class="comment"># 发送邮件</span></span><br><span class="line">do_otherthing()</span><br></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/02/23/Tornado源码分析-二-ioloop/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/02/23/Tornado源码分析-二-ioloop/" rel="next" title="'Tornado源码分析(二): ioloop">
+                <i class="fa fa-chevron-left"></i> 'Tornado源码分析(二): ioloop
+              </a>
+            
           </div>
-        
-      
-    </div>
 
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
+          <div class="post-nav-prev post-nav-item">
             
-            
-              
-                
-                <a class="post-title-link" href="/2016/02/22/Tornado源码分析-一-gen/" itemprop="url">
-                  Tornado源码分析(一): gen
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-02-22T02:49:39+08:00" content="2016-02-22">
-              2016-02-22
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也感到很好奇，在自己阅读几遍源码之后也试着整理思路简单分析一下。</p>
-<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>先从一个简单的例子开始:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">from</span> tornado.ioloop <span class="keyword">import</span> IOLoop</span><br><span class="line"><span class="keyword">from</span> tornado <span class="keyword">import</span> gen</span><br><span class="line"><span class="keyword">from</span> tornado.httpclient <span class="keyword">import</span> AsyncHTTPClient</span><br><span class="line"></span><br><span class="line"><span class="decorator">@gen.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch_url</span><span class="params">(url)</span>:</span></span><br><span class="line">    http_client = AsyncHTTPClient()</span><br><span class="line">    response = <span class="keyword">yield</span> http_client.fetch(url)</span><br><span class="line">    <span class="keyword">raise</span> gen.Return(response.body)</span><br><span class="line">    </span><br><span class="line"><span class="decorator">@gen.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    url = <span class="string">'http://httpbin.org/get'</span></span><br><span class="line">    content = <span class="keyword">yield</span> fetch_url(url)</span><br><span class="line">    print(content)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    ioloop = IOLoop.instance()</span><br><span class="line">    ioloop.run_sync(main)</span><br></pre></td></tr></table></figure>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/02/22/Tornado源码分析-一-gen/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
 
-  </section>
-
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -472,6 +305,10 @@
 
 
           
+  <div class="comments" id="comments">
+    
+  </div>
+
 
         </div>
         
@@ -491,8 +328,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="http://ww3.sinaimg.cn/large/8eb3c606jw8e30umhfk5kj.jpg"
@@ -539,6 +385,23 @@
 
       </section>
 
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#StackContext"><span class="nav-number">2.</span> <span class="nav-text">StackContext</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
       
 
     </div>
@@ -620,6 +483,167 @@
 
 
   
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
 
   
 
