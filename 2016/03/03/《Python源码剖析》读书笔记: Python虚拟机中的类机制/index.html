@@ -79,8 +79,8 @@ Python 中内置类型对象int, str本质都是class，在 Python2.2 之前它�
 对象之间对应着两种关系:
 
 is-kind-of 关系：基">
-<meta property="og:image" content="http://remones.me/Users/one/blog/source/img/2016-3-2-1.png">
-<meta property="og:updated_time" content="2016-03-03T11:14:56.000Z">
+<meta property="og:image" content="http://remones.me/img/2016-3-2-1.png">
+<meta property="og:updated_time" content="2016-03-03T11:18:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="《Python源码剖析》读书笔记: Python虚拟机中的类机制">
 <meta name="twitter:description" content="对象模型概述Python 中的对象(new class 诞生以后):
@@ -285,7 +285,7 @@ is-kind-of 关系：基">
 class.__bases__
     The tuple of base classes of a class object.
 </code></pre><p>如结果所见，对象关系总结如图所示:</p>
-<p><img src="/Users/one/blog/source/img/2016-3-2-1.png" alt="fuck"></p>
+<p><img src="/img/2016-3-2-1.png" alt="fuck"></p>
 <p><code>&lt;type &#39;type&#39;&gt;</code>在 Python 中担当 metaclass 的角色，用于创建 Python 中所有的类对象，<code>&lt;type &#39;object&#39;&gt;</code>是 Python 中所有类的顶层基类，包括<code>&lt;type &#39;type&#39;&gt;</code>。</p>
 <h3 id="从-type-对象到-class-对象"><a href="#从-type-对象到-class-对象" class="headerlink" title="从 type 对象到 class 对象"></a>从 type 对象到 class 对象</h3><p>对象在 Python 中的定义</p>
 <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _object &#123;</span><br><span class="line">    _PyObject_HEAD_EXTRA</span><br><span class="line">    Py_ssize_t ob_refcnt; <span class="comment">/* 对象引用计数 */</span></span><br><span class="line">    <span class="keyword">struct</span> _typeobject *ob_type; <span class="comment">/* 对象类型 */</span></span><br><span class="line">&#125; PyObject; <span class="comment">/* 一般对象 */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    PyObject ob_base; <span class="comment">/* 包含 PyObject */</span></span><br><span class="line">    Py_ssize_t ob_size; <span class="comment">/* 可变部分包含的item数量 */</span></span><br><span class="line">&#125; PyVarObject; <span class="comment">/* 变长对象 */</span></span><br></pre></td></tr></table></figure>
