@@ -67,7 +67,7 @@ StackContext一般的异步程序，像下面这样是无法捕捉到cb_func发�
 <meta property="og:description" content="引言Tornado里stack_context模块是用于解决异步函数调用时上下文不一致的问题的。
 StackContext一般的异步程序，像下面这样是无法捕捉到cb_func发生的异常的。因为callback是先注册添加的，在异步函数有结果时才会去执行callback，而那时callback与注册它的异步函数已经不处在同一上下文中了。
 1234try:    async_func(args, ca">
-<meta property="og:updated_time" content="2016-03-01T17:23:35.000Z">
+<meta property="og:updated_time" content="2016-03-02T04:14:19.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Tornado源码分析(三): stack_context">
 <meta name="twitter:description" content="引言Tornado里stack_context模块是用于解决异步函数调用时上下文不一致的问题的。
@@ -275,13 +275,17 @@ StackContext一般的异步程序，像下面这样是无法捕捉到cb_func发�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/02/23/Tornado源码分析-二-ioloop/" rel="next" title="Tornado源码分析(二): ioloop">
-                <i class="fa fa-chevron-left"></i> Tornado源码分析(二): ioloop
+              <a href="/2016/02/28/前端总结之CSS基础篇/" rel="next" title="前端总结之CSS基础篇">
+                <i class="fa fa-chevron-left"></i> 前端总结之CSS基础篇
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/03/《Python源码剖析》读书笔记-Class对象/" rel="prev" title="《Python源码剖析》读书笔记: Class对象">
+                《Python源码剖析》读书笔记: Class对象 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -349,7 +353,7 @@ StackContext一般的异步程序，像下面这样是无法捕捉到cb_func发�
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -363,7 +367,7 @@ StackContext一般的异步程序，像下面这样是无法捕捉到cb_func发�
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-count">4</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>

@@ -187,6 +187,111 @@
 
     
     
+      
+      
+        
+        
+        
+      
+
+      
+    
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/03/03/《Python源码剖析》读书笔记-Class对象/" itemprop="url">
+                  《Python源码剖析》读书笔记: Class对象
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-03T18:57:53+08:00" content="2016-03-03">
+              2016-03-03
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="Python虚拟机中的类机制"><a href="#Python虚拟机中的类机制" class="headerlink" title="Python虚拟机中的类机制"></a>Python虚拟机中的类机制</h2><h3 id="1-对象模型概述"><a href="#1-对象模型概述" class="headerlink" title="1. 对象模型概述"></a>1. 对象模型概述</h3><p>Python 中的对象(new class 诞生以后):</p>
+<ul>
+<li><code>class</code>对象: Python 中自定义类型</li>
+<li><code>instance</code>对象: 由<code>class</code>对象创建的实例</li>
+</ul>
+<p>Python 中内置类型对象<code>int</code>, <code>str</code>本质都是<code>class</code>，在 Python2.2 之前它们是单独一套<code>type</code>类型，2.2之后类机制重构后全部变成了<code>class</code>对象。</p>
+<p>对象之间对应着两种关系:</p>
+<ul>
+<li>is-kind-of 关系：基类与子类的关系，子类<code>is kind of</code>基类</li>
+<li>is-instance-of 关系：类与实例的关系，实例<code>is instance of</code>类</li>
+</ul>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/03/03/《Python源码剖析》读书笔记-Class对象/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
 
     
       
@@ -257,6 +362,99 @@
 <p>所以如果要对<code>async_func</code>和<code>callback</code>采用统一的异常处理方法，使用<code>contextlib.contextmanager</code>这种机制就能达到目的。用法介绍:<br>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/02/28/Tornado源码分析-三-stack-context/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
+                <a class="post-title-link" href="/2016/02/28/前端总结之CSS基础篇/" itemprop="url">
+                  前端总结之CSS基础篇
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-02-28T15:22:44+08:00" content="2016-02-28">
+              2016-02-28
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h3><p>元素是 HTML 文档结构基础，如 <code>p</code>、<code>div</code>。每个元素都会对文档表现一定作用，意味着每个元素生成一个矩形的框(box，也叫盒模型)，盒模型总共由3种框构成。</p>
+<ul>
+<li>margin-edge: 外边框 (margin，确定外延位置)</li>
+<li>border-edge: 边框 (border，确定边框)</li>
+<li>padding-edge: 内边框 (padiding，框内包含的填充元素)</li>
+</ul>
+<p>margin-edge 到 border 的距离叫外边距，padding-edge 到 border-edge 的距离叫内边距。</p>
+<p><img src="/img/2016-2-28-1.gif" alt="gege"></p>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/02/28/前端总结之CSS基础篇/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -497,7 +695,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-count">5</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -511,7 +709,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">1</span>
+              <span class="site-state-item-count">4</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
