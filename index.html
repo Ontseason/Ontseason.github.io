@@ -187,6 +187,15 @@
 
     
     
+      
+      
+        
+        
+        
+      
+
+      
+    
 
     
       
@@ -256,7 +265,7 @@
 <li><code>class</code>对象: Python 中自定义类型</li>
 <li><code>instance</code>对象: 由<code>class</code>对象创建的实例</li>
 </ul>
-<p>Python 中内置类型对象<code>int</code>, <code>str</code>本质都是<code>class</code>，在 Python2.2 之前它们是单独一套<code>type</code>类型，2.2之后类机制重构后全部变成了<code>class</code>对象。</p>
+<p>Python 中内置类型对象<code>int</code>, <code>str</code>本质都是<code>class</code>，在 Python2.2 之前它们是单独一套<code>type</code>类型，2.2之后类型机制重构后全部变成了<code>class</code>对象。</p>
 <p>对象之间对应着两种关系:</p>
 <ul>
 <li>is-kind-of 关系：基类与子类的关系，子类<code>is kind of</code>基类</li>
@@ -348,9 +357,9 @@
       
         
           <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p><code>Tornado</code>里<code>stack_context</code>模块是用于解决异步函数调用时上下文不一致的问题的。</p>
-<h3 id="StackContext"><a href="#StackContext" class="headerlink" title="StackContext"></a>StackContext</h3><p>一般的异步程序，像下面这样是无法捕捉到<code>cb_func</code>发生的异常的。因为<code>callback</code>是先注册添加的，在异步函数有结果时才会去执行<code>callback</code>，而那时<code>callback</code>与注册它的异步函数已经不处在同一上下文中了。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    async_func(args, callback=cb_func)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    ...</span><br></pre></td></tr></table></figure>
-<p>所以如果要对<code>async_func</code>和<code>callback</code>采用统一的异常处理方法，使用<code>contextlib.contextmanager</code>这种机制就能达到目的。用法介绍:<br>
+<p>在异步程序里，像下面这样是无法捕捉到<code>cb_func</code>中发生的异常的。<code>async_func</code>调用时只是注册了<code>callback</code>，等有结果返回时才会触发回调的执行，而那时回调函数和<code>async_func</code>早已不在同一个上下文了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    async_func(args, callback=cb_func)</span><br><span class="line"><span class="keyword">except</span>:</span><br><span class="line">    do_something_catch()</span><br></pre></td></tr></table></figure>
+<h3 id="StackContext"><a href="#StackContext" class="headerlink" title="StackContext"></a>StackContext</h3><p>如果要保证<code>async_func</code>和<code>callback</code>执行时采用一致的异常处理方式，借助Python标准库中<code>contextlib.contextmanager</code>，让<code>async_func</code>和<code>callback</code>在执行时进入同一个<code>contextlib.contextmanager</code>生成的上下文中就可以做到。</p>
           <div class="post-more-link text-center">
             <a class="btn" href="/2016/02/28/Tornado源码分析-三-stack-context/#more" rel="contents">
               阅读全文 &raquo;
@@ -530,7 +539,7 @@
       
         
           <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>在剖析 ioloop 的实现代码之前，有一些 I/O 中常出现的概念需要清楚。简单复习和归纳一下几个名词的含义。</p>
-<h4 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a>同步和异步</h4><p>同步和异步的区别表现在程序执行的方式上。同步就是顺序执行，一件事干完了才能继续另一件事，这个不多说了，主要是对异步的理解。</p>
+<h4 id="同步和异步"><a href="#同步和异步" class="headerlink" title="同步和异步"></a>同步和异步</h4><p>同步和异步的区别表现在程序执行的方式上。同步可以理解为顺序执行，一件事干完了才能继续另一件事，这个不多说了，主要是对异步的理解。</p>
 <p>举个例子，如果你想发送一封邮件, 首先你需要这样做</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mail_client = smtp.connect() <span class="comment"># 和邮件服务端建立连接</span></span><br><span class="line">mail_client.send_mail(mailto) <span class="comment"># 发送邮件</span></span><br><span class="line">do_otherthing()</span><br></pre></td></tr></table></figure>
           <div class="post-more-link text-center">
