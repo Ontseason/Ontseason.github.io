@@ -1,0 +1,971 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.0" />
+
+
+
+
+
+
+<meta name="description" content="无规律的个人总结，想到什么就写什么。
+##基础类型
+int1234In [1]: a = 10In [2]: a.int.bit_length   int.denominator  int.imag         int.realint.conjugate    int.from_bytes   int.numerator    int.to_bytes
+部分方法属性：
+
+
+
+属性
+值
+解释">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python的一些个人总结">
+<meta property="og:url" content="http://remones.me/2016/03/04/Python 的一些总结/index.html">
+<meta property="og:site_name" content="remones note">
+<meta property="og:description" content="无规律的个人总结，想到什么就写什么。
+##基础类型
+int1234In [1]: a = 10In [2]: a.int.bit_length   int.denominator  int.imag         int.realint.conjugate    int.from_bytes   int.numerator    int.to_bytes
+部分方法属性：
+
+
+
+属性
+值
+解释">
+<meta property="og:updated_time" content="2016-03-06T08:42:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python的一些个人总结">
+<meta name="twitter:description" content="无规律的个人总结，想到什么就写什么。
+##基础类型
+int1234In [1]: a = 10In [2]: a.int.bit_length   int.denominator  int.imag         int.realint.conjugate    int.from_bytes   int.numerator    int.to_bytes
+部分方法属性：
+
+
+
+属性
+值
+解释">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: '[object Object]',
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> Python的一些个人总结 | remones note </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">remones note</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">to be, or not to be</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Python的一些个人总结
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-04T18:57:53+08:00" content="2016-03-04">
+              2016-03-04
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>无规律的个人总结，想到什么就写什么。</p>
+<p>##基础类型</p>
+<h3 id="int"><a href="#int" class="headerlink" title="int"></a>int</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">1</span>]: a = <span class="number">10</span></span><br><span class="line">In [<span class="number">2</span>]: a.</span><br><span class="line">int.bit_length   int.denominator  int.imag         int.real</span><br><span class="line">int.conjugate    int.from_bytes   int.numerator    int.to_bytes</span><br></pre></td></tr></table></figure>
+<p>部分方法属性：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">bit_length</td>
+<td>4</td>
+<td>二进制位长</td>
+</tr>
+<tr>
+<td style="text-align:left">denominator</td>
+<td>1</td>
+<td>分母</td>
+</tr>
+<tr>
+<td style="text-align:left">imag</td>
+<td>0</td>
+<td>虚数</td>
+</tr>
+<tr>
+<td style="text-align:left">real</td>
+<td>10</td>
+<td>实数</td>
+</tr>
+<tr>
+<td style="text-align:left">conjugate</td>
+<td>10</td>
+</tr>
+<tr>
+<td style="text-align:left">from_bytes</td>
+<td>-</td>
+<td>?</td>
+</tr>
+<tr>
+<td style="text-align:left">numerator</td>
+<td>10</td>
+<td>分子</td>
+</tr>
+<tr>
+<td style="text-align:left">to_types</td>
+<td>-</td>
+<td>?</td>
+</tr>
+</tbody>
+</table>
+<p>整数池缓存：[-5, 256]对应的整数对象被缓存在一个对象中，避免频繁申请创建对象带来的开销。<br><a id="more"></a><br>关于Python对象缓存池不错的文章: <a href="http://blog.csdn.net/zhzhl202/article/details/7547445" target="_blank" rel="external">http://blog.csdn.net/zhzhl202/article/details/7547445</a></p>
+<h3 id="float"><a href="#float" class="headerlink" title="float"></a>float</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: a = <span class="number">0.125</span></span><br><span class="line">In [<span class="number">4</span>]: a.</span><br><span class="line">a.as_integer_ratio  a.fromhex           a.imag              a.real</span><br><span class="line">a.conjugate         a.hex               a.is_integer</span><br></pre></td></tr></table></figure>
+<p>部分方法属性：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">as_interger_ratio</td>
+<td>(1, 8)</td>
+<td>可以表示成分数的整数对</td>
+</tr>
+<tr>
+<td style="text-align:left">fromhex</td>
+<td>-</td>
+<td>float.fromhex(“0x123”) == 291.0, 16进制转成成浮点数</td>
+</tr>
+<tr>
+<td style="text-align:left">hex</td>
+<td>0x1.0000000000000p-3</td>
+<td>转换成16进制</td>
+</tr>
+<tr>
+<td style="text-align:left">is_integer</td>
+<td>False</td>
+<td>是否是整数</td>
+</tr>
+</tbody>
+</table>
+<h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">5</span>]: s1 = <span class="string">"hello_world"</span></span><br><span class="line">In [<span class="number">6</span>]: s2 = <span class="string">"hello_world"</span></span><br><span class="line">In [<span class="number">7</span>]: id(s1) == id(s2)</span><br><span class="line">Out[<span class="number">7</span>]: <span class="keyword">True</span></span><br><span class="line">In [<span class="number">8</span>]: s1 = <span class="string">"Hello World"</span></span><br><span class="line">In [<span class="number">9</span>]: s2 = <span class="string">"Hello World"</span></span><br><span class="line">In [<span class="number">10</span>]: id(s1) == id(s2)</span><br><span class="line">Out[<span class="number">10</span>]: <span class="keyword">False</span></span><br><span class="line">In [<span class="number">11</span>]: s = <span class="string">'hi'</span></span><br><span class="line">In [<span class="number">12</span>]: s.</span><br><span class="line">a.capitalize    a.format_map    a.isprintable   a.partition     a.splitlines</span><br><span class="line">a.casefold      a.index         a.isspace       a.replace       a.startswith</span><br><span class="line">a.center        a.isalnum       a.istitle       a.rfind         a.strip</span><br><span class="line">a.count         a.isalpha       a.isupper       a.rindex        a.swapcase</span><br><span class="line">a.encode        a.isdecimal     a.join          a.rjust         a.title</span><br><span class="line">a.endswith      a.isdigit       a.ljust         a.rpartition    a.translate</span><br><span class="line">a.expandtabs    a.isidentifier  a.lower         a.rsplit        a.upper</span><br><span class="line">a.find          a.islower       a.lstrip        a.rstrip        a.zfill</span><br><span class="line">a.format        a.isnumeric     a.maketrans     a.split</span><br></pre></td></tr></table></figure>
+<p>部分方法属性：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">capitalize</td>
+<td>Hi</td>
+<td>首字母大写</td>
+</tr>
+<tr>
+<td style="text-align:left">format_map</td>
+<td>-</td>
+<td>和format一样，不过不用再复制一份</td>
+</tr>
+<tr>
+<td style="text-align:left">isprintable</td>
+<td>True</td>
+<td>可否被打印，Unicode部分不支持</td>
+</tr>
+<tr>
+<td style="text-align:left">partition</td>
+<td>-</td>
+<td>分隔子串</td>
+</tr>
+<tr>
+<td style="text-align:left">splitlines</td>
+<td>-</td>
+<td>按换行符分隔</td>
+</tr>
+<tr>
+<td style="text-align:left">casefold</td>
+<td>hi</td>
+<td>lowercase进阶，支持一些unicode的lowercase</td>
+</tr>
+<tr>
+<td style="text-align:left">isspace</td>
+<td>False</td>
+<td>是否只有空行、换行</td>
+</tr>
+<tr>
+<td style="text-align:left">center</td>
+<td>hi</td>
+<td>字符串居中，指定大于原长的宽度，空格用给定的字符填充</td>
+</tr>
+<tr>
+<td style="text-align:left">maketrans</td>
+<td>-</td>
+<td>翻译，到需要有一张Unicode词汇表</td>
+</tr>
+<tr>
+<td style="text-align:left">swapcase</td>
+<td>-</td>
+<td>交换大小写</td>
+</tr>
+</tbody>
+</table>
+<p>性能:</p>
+<ul>
+<li><code>&#39;a&#39;+&#39;_&#39;+&#39;c&#39;</code>, 每次连接都会分配一次内存空间, 做两次拷贝。n次连接性能开销很大</li>
+<li><code>&#39;\n&#39;.join([&#39;a&#39;, &#39;c&#39;])</code>, 先根据计算好的序列长度分配内存，再逐个拷贝。</li>
+</ul>
+<h3 id="list"><a href="#list" class="headerlink" title="list"></a>list</h3><p>可变对象。对象池<code>free_list</code>内存重用</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">3</span>]: id([<span class="number">1</span>, <span class="number">2</span>]) == id([<span class="number">1</span>])</span><br><span class="line">Out[<span class="number">3</span>]: <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<p>使用类型符号(<code>[]</code>)创建对象，会首先检查<code>free_list</code>。<code>id()</code>函数使用完列表对象后，引用计数为空，对象被销毁，进入<code>free_list</code>，下次申请 list 时复用。使用<code>list()</code>创建对象则不会使用<code>free_list</code>，不过销毁后仍会进入<code>free_list</code>。 缓冲池最大长度80。</p>
+<p>初始化方式:<br><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">l = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>]</span><br><span class="line">l = [<span class="tag">i</span> <span class="keyword">for</span> <span class="tag">i</span> <span class="keyword">in</span> <span class="function"><span class="title">range</span><span class="params">(<span class="number">10</span>)</span></span>]</span><br></pre></td></tr></table></figure></p>
+<p>可使用<code>+</code>拼接两个 list 对象，部分方法:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th>值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">copy</td>
+<td>一样的新对象</td>
+<td>deep copy</td>
+</tr>
+<tr>
+<td style="text-align:left">clear</td>
+<td>[]</td>
+<td>清空列表</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tuple"><a href="#tuple" class="headerlink" title="tuple"></a>tuple</h3><p>不可变对象。因此根据长度在<code>free_list</code>中选择复用对象内存</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">15</span>]: id(tuple([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])) == id(tuple([<span class="number">1</span>, <span class="number">2</span>]))</span><br><span class="line">Out[<span class="number">15</span>]: <span class="keyword">False</span></span><br><span class="line"></span><br><span class="line">In [<span class="number">16</span>]: id(tuple([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])) == id(tuple([<span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>]))</span><br><span class="line">Out[<span class="number">16</span>]: <span class="keyword">True</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>可使用<code>+</code>拼接两个 tuple 对象</li>
+<li>pairs tuple 列表(<code>[(k, v), (k1, v1)]</code>)可转换成 dict</li>
+</ul>
+<p>有一个trick要避免</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">20</span>]: t = (i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>))</span><br><span class="line">In [<span class="number">21</span>]: t</span><br><span class="line">Out[<span class="number">21</span>]: &lt;generator object &lt;genexpr&gt; at <span class="number">0x10ab10518</span>&gt;</span><br></pre></td></tr></table></figure>
+<p>只有两个方法。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">count</td>
+<td>统计item个数</td>
+</tr>
+<tr>
+<td style="text-align:left">index</td>
+<td>计算item下标</td>
+</tr>
+</tbody>
+</table>
+<h3 id="dict"><a href="#dict" class="headerlink" title="dict"></a>dict</h3><p>可变对象。对象池<code>free_list</code>重用</p>
+<p>可使用<code>dict(k=v, k1=v1)</code>初始化 dict 对象，</p>
+<p>比较特别的初始化方法：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">In [<span class="number">24</span>]: dict.fromkeys([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>], <span class="string">'x'</span>)</span><br><span class="line">Out[<span class="number">24</span>]: &#123;<span class="number">1</span>: <span class="string">'x'</span>, <span class="number">2</span>: <span class="string">'x'</span>, <span class="number">3</span>: <span class="string">'x'</span>, <span class="number">4</span>: <span class="string">'x'</span>&#125;</span><br><span class="line"></span><br><span class="line">In [<span class="number">30</span>]: l = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]</span><br><span class="line">In [<span class="number">31</span>]: f = <span class="keyword">lambda</span> x: x*<span class="number">10</span></span><br><span class="line">In [<span class="number">32</span>]: d = &#123;k: f(k) <span class="keyword">for</span> k <span class="keyword">in</span> l&#125;</span><br><span class="line">In [<span class="number">33</span>]: d</span><br><span class="line">Out[<span class="number">33</span>]: &#123;<span class="number">1</span>: <span class="number">10</span>, <span class="number">2</span>: <span class="number">20</span>, <span class="number">3</span>: <span class="number">30</span>, <span class="number">4</span>: <span class="number">40</span>, <span class="number">5</span>: <span class="number">50</span>&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="set"><a href="#set" class="headerlink" title="set"></a>set</h3><p>无重复集合，比list占用内存少，对象池<code>free_list</code>内存重用</p>
+<p>初始化方法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">s = &#123;i <span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>)&#125;</span><br><span class="line">s = set(iteralbe) <span class="comment"># 可迭代对象</span></span><br></pre></td></tr></table></figure>
+<p>部分方法属性:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">属性</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">`s1</td>
+<td>s2`</td>
+<td>并集     </td>
+</tr>
+<tr>
+<td style="text-align:left"><code>s1 &amp; s2</code></td>
+<td>交集</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>s1 - s2</code></td>
+<td>差集，s1 有而 s2 没有的集合 </td>
+</tr>
+<tr>
+<td style="text-align:left"><code>s1 ^ s2</code></td>
+<td>异或</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>s1.issubset(s2)</code></td>
+<td>s1 是不是 s2 的子集</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>s1.issuperset(s2)</code></td>
+<td>s1 是不是 s2 的父集</td>
+</tr>
+</tbody>
+</table>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>使用<code>*</code>和<code>**</code>将 list、tuple 转换成位置参数和将 dict 转换成关键字参数。</p>
+<h3 id="从-UnboundLocalError-说起"><a href="#从-UnboundLocalError-说起" class="headerlink" title="从 UnboundLocalError 说起"></a>从 UnboundLocalError 说起</h3><p>典型代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> x</span><br><span class="line">    x = <span class="number">2</span></span><br><span class="line">foo()</span><br><span class="line"></span><br><span class="line">UnboundLocalError: local variable <span class="string">'x'</span> referenced before assignment</span><br></pre></td></tr></table></figure>
+<p>编译器在编译<code>foo</code>函数代码时，发现函数中有<code>x = 2</code>这样变量绑定的语句，于是将<code>x</code>记录在local scope（在Python源码中对应的是PyCodeObjectd的<code>co_varnames</code>域）里。等到 Runtime 期间，函数执行<code>print x</code>时，根据 LEGB 查找当前命名空间，发现 x 存在，但是没有初始化(将x和一个对象绑定)，于是报错。</p>
+<h3 id="函数关键字参数默认值的坑？"><a href="#函数关键字参数默认值的坑？" class="headerlink" title="函数关键字参数默认值的坑？"></a>函数关键字参数默认值的坑？</h3><p>一个『被人诟病』的例子</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">def foo(l=[])</span><br><span class="line">    l.append(1)</span><br><span class="line">    print l</span><br><span class="line"></span><br><span class="line">foo() # [1]</span><br><span class="line">foo() # [1, 1]</span><br></pre></td></tr></table></figure>
+<p>函数<code>foo</code>中明明只执行了一次<code>l.append(1)</code>，并且l的默认值是<code>[]</code>，结果不应该是<code>[1]</code>才对吗？</p>
+<p><code>def</code> 声明语句在 Runtime 时期只被执行了一次，默认值是会被存放在一个 list 对象中的，每当调用函数时再将这个值与<code>l</code>绑定。所以，如果默认值是 list 这种可变对象，就会出现上面的结果。</p>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>先看一个闭包的例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></span><br><span class="line">    n = <span class="number">3</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">bar</span><span class="params">()</span>:</span></span><br><span class="line">        <span class="keyword">print</span> n</span><br><span class="line">    <span class="keyword">return</span> bar</span><br><span class="line"></span><br><span class="line">f = foo()</span><br><span class="line"><span class="keyword">print</span> f.func_closure</span><br><span class="line"></span><br><span class="line">(&lt;cell at <span class="number">0x10fab4b08</span>: int object at <span class="number">0x7fd09bc0e738</span>&gt;,)</span><br></pre></td></tr></table></figure>
+<p><code>func_closure</code>记录了闭包的位置。在编译时期就确定了<code>free variables</code>和<code>cell variables</code>，其实指的都是同一个对象，分别存储于<code>func_code.co_freevars</code>和对于函数<code>foo</code>而言，嵌套函数<code>bar</code>使用了它的局部变量<code>n</code>，那<code>n</code>就是<code>foo</code>的<code>cell variable</code>，反过来说<code>n</code>就是<code>bar</code>的<code>free variables</code>，而闭包有一种说法就是函数和它的<code>free variables</code>构成。</p>
+<h2 id="gengrator"><a href="#gengrator" class="headerlink" title="gengrator"></a>gengrator</h2><p>定义: 函数中包含<code>yield</code>声明。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def foo()</span><br><span class="line">   p = yield n</span><br></pre></td></tr></table></figure>
+<p><code>gen.__next__()</code>或<code>gen.send(param)</code>用于迭代，<code>send</code>可以传递参数至<code>= yield</code>左边的变量，初次启动<code>generator</code>如果使用<code>send</code>，参数必须是None。可以 <code>if (yiled x)</code>, <code>while (yield x)</code>, Py3.x 新增<code>yiled from</code>。</p>
+<p>生成器函数被调用时返回一个生成器。使用生成器的<code>__next__</code>或<code>send</code>方法，恢复生成器函数内部的执行，直到在函数内部再次遇到<code>yield</code>，此时会保存当前执行上下文，堆栈指针，暂停函数执行并把<code>yield</code>所带的值返回，将程序执行控制权交给外部调用部分的代码。</p>
+<p>Py3.3 之前不允许生成器函数中的<code>return</code>带返回值，Py3.3 之后可以有，用作中止异常的参数。</p>
+<p><code>gen.close()</code>关闭生成器，如果在函数内部<code>yield</code>部分有做<code>try..finally</code>捕捉，最终会执行<code>finally</code>部分的代码。</p>
+<p><code>gen.throw(exce)</code>，传递异常到生成器函数内部，生成器中可以捕获处理。</p>
+<p>比较好的说明<code>throw</code>好处的回答: <a href="http://stackoverflow.com/questions/11485591/what-is-generator-throw-good-for" target="_blank" rel="external">what is generator good for?</a></p>
+<h2 id="metaclass"><a href="#metaclass" class="headerlink" title="metaclass"></a>metaclass</h2><p>metaclass 用于生成类对象，它可以是任何可调用的对象，无论是类，对象，函数，只要能够根据类的动态元信息生成类对象即可。调用 metaclass 时需要将类名、基类tuple、包含类属性的 dict 这三个参数传递进去</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">meta</span><span class="params">(cls_name, bases, attrs)</span>:</span></span><br><span class="line">    attrs.update(fuck=<span class="string">'no'</span>)</span><br><span class="line">    <span class="keyword">return</span> type(cls_name, bases, attrs)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span><span class="params">(object)</span>:</span></span><br><span class="line">     __metaclass__ = meta</span><br><span class="line"></span><br><span class="line">a = A()</span><br><span class="line"><span class="keyword">print</span> a.__class__.__dict__</span><br><span class="line"></span><br><span class="line">&lt;dictproxy &#123;<span class="string">'__dict__'</span>: &lt;attribute <span class="string">'__dict__'</span> of <span class="string">'A'</span> objects&gt;,</span><br><span class="line"> <span class="string">'__doc__'</span>: <span class="keyword">None</span>,</span><br><span class="line"> <span class="string">'__metaclass__'</span>: &lt;function __main__.meta&gt;,</span><br><span class="line"> <span class="string">'__module__'</span>: <span class="string">'__main__'</span>,</span><br><span class="line"> <span class="string">'__weakref__'</span>: &lt;attribute <span class="string">'__weakref__'</span> of <span class="string">'A'</span> objects&gt;,</span><br><span class="line"> <span class="string">'fuck'</span>: <span class="string">'no'</span>&#125;&gt;</span><br></pre></td></tr></table></figure>
+<p>观察生成类对象的过程，现在将 <code>__metacalss__</code> 换成类，以Python3.x为例</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">class Singleton(type):</span><br><span class="line">    _inst = &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    def __new__(metacls, cls_name, bases, attrs):</span><br><span class="line">        print('__new__')</span><br><span class="line">        return super(Singleton, metacls).__new__(metacls, cls_name, bases, attrs)</span><br><span class="line"></span><br><span class="line">    def __call__(cls_inst, *args, **kw):</span><br><span class="line">        print('__call__: %s', cls_inst)</span><br><span class="line">        if cls_inst not in Singleton._inst:</span><br><span class="line">            ins = cls_inst.__new__(cls_inst, *args, **kw)</span><br><span class="line">            cls_inst.__init__(ins, 'fuck', **kw)</span><br><span class="line">            Singleton._inst[cls_inst] = ins</span><br><span class="line">        return Singleton._inst[cls_inst]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class MyClass(object, metaclass=Singleton):</span><br><span class="line">    __metaclass__ = Singleton</span><br><span class="line"></span><br><span class="line">    def __init__(self, *args, **kw):</span><br><span class="line">        print(args, kw)</span><br><span class="line"></span><br><span class="line">print(id(MyClass()) == id(MyClass()))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">__new__</span><br><span class="line">__call__: %s &lt;class '__main__.MyClass'&gt;</span><br><span class="line">('fuck',) &#123;&#125;</span><br><span class="line">__call__: %s &lt;class '__main__.MyClass'&gt;</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+<p><code>metaclass</code>的<code>__new__</code>方法为我们创造了想要的类对象，在类对象后面加上执行括号，就会调用<code>__call__</code>生成对象实例，所以<code>__call__</code>必须包含生成实例的两个方法<code>__new__</code>和<code>__init__</code>，执行完后返回实例。</p>
+<h2 id="decorator"><a href="#decorator" class="headerlink" title="decorator"></a>decorator</h2><p>装饰器是函数嵌套的语法糖，如果把它的调用层展开，就很容易理解</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># </span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dec</span><span class="params">(func)</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'here'</span></span><br><span class="line">    <span class="keyword">return</span> func</span><br><span class="line"></span><br><span class="line"><span class="decorator">@dec</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">foo</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">'test'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">### 展开后    </span></span><br><span class="line">foo = dec(foo)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">dec</span><span class="params">(name)</span>:</span></span><br><span class="line">    print(name)</span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">wrapper</span><span class="params">(func)</span>:</span></span><br><span class="line">        print(<span class="string">'wrapper'</span>)</span><br><span class="line">        <span class="function"><span class="keyword">def</span> <span class="title">depp_wrapper</span><span class="params">(*args, **kw)</span>:</span></span><br><span class="line">            <span class="keyword">return</span> func(args, **kw)</span><br><span class="line">        <span class="keyword">return</span> depp_wrapper</span><br><span class="line">    <span class="keyword">return</span> wrapper</span><br><span class="line"></span><br><span class="line"><span class="decorator">@dec(name='one')</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fuck</span><span class="params">(name)</span>:</span></span><br><span class="line">    print(<span class="string">'fuck'</span>)</span><br><span class="line"></span><br><span class="line">fuck()</span><br><span class="line"></span><br><span class="line"><span class="comment">## 展开后</span></span><br><span class="line">fuck = dec(name=<span class="string">'one'</span>)(fuck)(*args, **kwarrgs)</span><br><span class="line"></span><br><span class="line">所以如果多个装饰器的话</span><br><span class="line"></span><br><span class="line"><span class="decorator">@A</span></span><br><span class="line"><span class="decorator">@B</span></span><br><span class="line"><span class="decorator">@C</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">()</span>:</span></span><br><span class="line">    <span class="keyword">pass</span></span><br><span class="line"></span><br><span class="line">f() 等价于 A(B(C(F)))</span><br><span class="line"></span><br><span class="line">函数名和函数参数要在不同层次的嵌套中，记住这点就很容易掌握了</span><br></pre></td></tr></table></figure>
+<h2 id="descriptor"><a href="#descriptor" class="headerlink" title="descriptor"></a>descriptor</h2><p><code>__getattr__</code>、<code>__getattribute__</code>、<code>__get__</code>的关系:</p>
+<ul>
+<li><code>__getattribute__(self, name)</code>: 获取实例属性的默认方法</li>
+<li><code>__getattr__(self, name)</code>: 属性在对象和类中都没有找到，<code>__getattribute__</code>就会调用<strong>getattr</strong>方法尝试获取属性。</li>
+<li><code>__get__(self, instance, owner)</code>: 如果属性中含有<code>__get__</code>方法就会调用</li>
+</ul>
+<p>描述符可以含有<code>__get__</code>、<code>__set__</code>、<code>__delete__</code>中的一个或多个方法。</p>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用:"></a>作用:</h3><ul>
+<li><code>__get__</code>: 对让外部访问的属性做统一的预先处理。</li>
+<li><code>__set__</code>: 设置属性时可做预先处理或判断，如果描述符中不含<code>__set__</code>方法，则属性变成只读</li>
+<li><code>__delete__</code>: 删除属性时绑定相关操作</li>
+</ul>
+<p>文档参考: <a href="https://docs.python.org/2/howto/descriptor.html" target="_blank" rel="external">Descriptor HowTo Guide</a></p>
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag">#Python</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/03/《Python源码剖析》读书笔记-Python虚拟机中的类机制/" rel="next" title="《Python源码剖析》读书笔记: Python虚拟机中的类机制">
+                <i class="fa fa-chevron-left"></i> 《Python源码剖析》读书笔记: Python虚拟机中的类机制
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://ww3.sinaimg.cn/large/8eb3c606jw8e30umhfk5kj.jpg"
+               alt="remones" />
+          <p class="site-author-name" itemprop="name">remones</p>
+          <p class="site-description motion-element" itemprop="description">Programer | Pythoner | Life fucker</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">6</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#int"><span class="nav-number">1.</span> <span class="nav-text">int</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#float"><span class="nav-number">2.</span> <span class="nav-text">float</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#string"><span class="nav-number">3.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#list"><span class="nav-number">4.</span> <span class="nav-text">list</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tuple"><span class="nav-number">5.</span> <span class="nav-text">tuple</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#dict"><span class="nav-number">6.</span> <span class="nav-text">dict</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#set"><span class="nav-number">7.</span> <span class="nav-text">set</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数"><span class="nav-number"></span> <span class="nav-text">函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#从-UnboundLocalError-说起"><span class="nav-number">1.</span> <span class="nav-text">从 UnboundLocalError 说起</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#函数关键字参数默认值的坑？"><span class="nav-number">2.</span> <span class="nav-text">函数关键字参数默认值的坑？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#闭包"><span class="nav-number">3.</span> <span class="nav-text">闭包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#gengrator"><span class="nav-number"></span> <span class="nav-text">gengrator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#metaclass"><span class="nav-number"></span> <span class="nav-text">metaclass</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#decorator"><span class="nav-number"></span> <span class="nav-text">decorator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#descriptor"><span class="nav-number"></span> <span class="nav-text">descriptor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#作用"><span class="nav-number">1.</span> <span class="nav-text">作用:</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">remones</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+
+  
+  
+
+
+</body>
+</html>
