@@ -59,20 +59,191 @@
 
 <meta name="description" content="1.类型值类型
 基本值类型
- 类型       |   长度   |  默认值————-|:——–:|——- bool      | 1        | false byte      | 1        | 0 rune      | 4        | 0int, uint    | 4 or 8   | 0int8, uint8  | 1        | 0int16,uint16">
+
+
+
+
+类型
+长度
+默认值
+
+
+
+
+bool
+1
+false
+
+
+byte
+1
+0
+
+
+rune
+4
+0
+
+
+int, uint
+4 or 8
+0
+
+
+int8, uint8
+1
+0         
+
+
+int16,uint16
+2
+0
+
+
+int32,uint32
+4
+0
+
+
+int64,uint64
+8
+0
+
+
+float32
+4
+0.0
+
+
+float64
+8">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go语言学习笔记">
-<meta property="og:url" content="http://remones.me/2016/03/08/Go语言学习笔记/index.html">
+<meta property="og:url" content="http://remones.me/2016/03/01/Go语言学习笔记/index.html">
 <meta property="og:site_name" content="remones note">
 <meta property="og:description" content="1.类型值类型
 基本值类型
- 类型       |   长度   |  默认值————-|:——–:|——- bool      | 1        | false byte      | 1        | 0 rune      | 4        | 0int, uint    | 4 or 8   | 0int8, uint8  | 1        | 0int16,uint16">
-<meta property="og:updated_time" content="2016-03-08T10:01:07.000Z">
+
+
+
+
+类型
+长度
+默认值
+
+
+
+
+bool
+1
+false
+
+
+byte
+1
+0
+
+
+rune
+4
+0
+
+
+int, uint
+4 or 8
+0
+
+
+int8, uint8
+1
+0         
+
+
+int16,uint16
+2
+0
+
+
+int32,uint32
+4
+0
+
+
+int64,uint64
+8
+0
+
+
+float32
+4
+0.0
+
+
+float64
+8">
+<meta property="og:updated_time" content="2016-03-08T10:11:33.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go语言学习笔记">
 <meta name="twitter:description" content="1.类型值类型
 基本值类型
- 类型       |   长度   |  默认值————-|:——–:|——- bool      | 1        | false byte      | 1        | 0 rune      | 4        | 0int, uint    | 4 or 8   | 0int8, uint8  | 1        | 0int16,uint16">
+
+
+
+
+类型
+长度
+默认值
+
+
+
+
+bool
+1
+false
+
+
+byte
+1
+0
+
+
+rune
+4
+0
+
+
+int, uint
+4 or 8
+0
+
+
+int8, uint8
+1
+0         
+
+
+int16,uint16
+2
+0
+
+
+int32,uint32
+4
+0
+
+
+int64,uint64
+8
+0
+
+
+float32
+4
+0.0
+
+
+float64
+8">
 
 
 
@@ -220,8 +391,8 @@
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-03-08T18:00:10+08:00" content="2016-03-08">
-              2016-03-08
+            <time itemprop="dateCreated" datetime="2016-03-01T18:00:10+08:00" content="2016-03-01">
+              2016-03-01
             </time>
           </span>
 
@@ -247,10 +418,90 @@
 
       
         <h2 id="1-类型"><a href="#1-类型" class="headerlink" title="1.类型"></a>1.类型</h2><h3 id="值类型"><a href="#值类型" class="headerlink" title="值类型"></a>值类型</h3><ul>
-<li><p>基本值类型</p>
-<p> 类型       |   长度   |  默认值<br>————-|:——–:|——-<br> bool      | 1        | false<br> byte      | 1        | 0<br> rune      | 4        | 0<br>int, uint    | 4 or 8   | 0<br>int8, uint8  | 1        | 0<br>int16,uint16 | 2        | 0<br>int32,uint32 | 4        | 0<br>int64,uint64 | 8        | 0<br>float32      | 4        | 0.0<br>float64      | 8        | 0.0<br>complex64    | 8        |<br>complex128   | 16       |<br>uintptr      | 4 or 8   |<br>string       |  -       | “”</p>
-</li>
+<li>基本值类型</li>
 </ul>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th style="text-align:center">长度</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bool</td>
+<td style="text-align:center">1</td>
+<td>false</td>
+</tr>
+<tr>
+<td>byte</td>
+<td style="text-align:center">1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>rune</td>
+<td style="text-align:center">4</td>
+<td>0</td>
+</tr>
+<tr>
+<td>int, uint</td>
+<td style="text-align:center">4 or 8</td>
+<td>0</td>
+</tr>
+<tr>
+<td>int8, uint8</td>
+<td style="text-align:center">1</td>
+<td>0         </td>
+</tr>
+<tr>
+<td>int16,uint16</td>
+<td style="text-align:center">2</td>
+<td>0</td>
+</tr>
+<tr>
+<td>int32,uint32</td>
+<td style="text-align:center">4</td>
+<td>0</td>
+</tr>
+<tr>
+<td>int64,uint64</td>
+<td style="text-align:center">8</td>
+<td>0</td>
+</tr>
+<tr>
+<td>float32</td>
+<td style="text-align:center">4</td>
+<td>0.0</td>
+</tr>
+<tr>
+<td>float64</td>
+<td style="text-align:center">8</td>
+<td>0.0</td>
+</tr>
+<tr>
+<td>complex64</td>
+<td style="text-align:center">8</td>
+<td>-</td>
+</tr>
+<tr>
+<td>complex128</td>
+<td style="text-align:center">16</td>
+<td>-</td>
+</tr>
+<tr>
+<td>uintptr</td>
+<td style="text-align:center">4 or 8</td>
+<td>-</td>
+</tr>
+<tr>
+<td>string</td>
+<td style="text-align:center">-</td>
+<td>“”</td>
+</tr>
+</tbody>
+</table>
+<a id="more"></a>
 <h4 id="Array"><a href="#Array" class="headerlink" title="Array"></a>Array</h4><p>Go 里 Array 也是值类型，赋值时会复制整个数组，所以不适合作为函数参数传递。</p>
 <p>声明方式</p>
 <figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">[</span>语法]:</span><br><span class="line">var ArrayType <span class="keyword">[</span>ArraySize<span class="instruction"> or </span>...]ArrayType</span><br><span class="line"></span><br><span class="line">var<span class="instruction"> array </span><span class="keyword">[</span>5]int // 声明时数组item全部为0<span class="instruction"></span><br><span class="line">array </span>= <span class="keyword">[</span>5]int&#123;1, 2, 3&#125; //按序赋值初始化 <span class="keyword">[</span>1, 2, 3, 0, 0]<span class="instruction"></span><br><span class="line">array </span>= <span class="keyword">[</span>5]int&#123;0: 2, 4: 5&#125; //指定index赋值初始化 <span class="keyword">[</span>2, 0, 0, 0, 5]</span><br><span class="line"></span><br><span class="line">// 自动推导长度, 只适用一维数组<span class="instruction"></span><br><span class="line">array </span>:= <span class="keyword">[</span>...]int&#123;1, 2, 3&#125; // <span class="keyword">[</span>...]自动推导出<span class="keyword">[</span>3]int<span class="instruction"></span><br><span class="line">array </span>:= <span class="keyword">[</span>...]int&#123;1: 1, 3: 2, 5:3&#125; // 自动推导出<span class="keyword">[</span>6]int</span><br><span class="line"></span><br><span class="line">// 二维数组<span class="instruction"></span><br><span class="line">array </span>:= <span class="keyword">[</span>2]<span class="keyword">[</span>2]int&#123;&#123;1, 2&#125;, &#123;3, 4&#125;&#125;<span class="instruction"></span><br><span class="line">array </span>:= <span class="keyword">[</span>...]<span class="keyword">[</span>2]int&#123;<span class="keyword">[</span>2]int&#123;1, 2&#125;, <span class="keyword">[</span>2]int&#123;1, 2&#125;&#125; // 只有第一维可用 ...</span><br></pre></td></tr></table></figure>
@@ -367,13 +618,17 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/03/04/Python 的一些总结/" rel="next" title="Python的一些个人总结">
-                <i class="fa fa-chevron-left"></i> Python的一些个人总结
+              <a href="/2016/02/28/Tornado源码分析-三-stack-context/" rel="next" title="Tornado源码分析(三): stack_context">
+                <i class="fa fa-chevron-left"></i> Tornado源码分析(三): stack_context
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/03/《Python源码剖析》读书笔记-Python虚拟机中的类机制/" rel="prev" title="《Python源码剖析》读书笔记: Python虚拟机中的类机制">
+                《Python源码剖析》读书笔记: Python虚拟机中的类机制 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
