@@ -41,7 +41,7 @@
 <link href="/css/main.css?v=5.0.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="CSS,前端," />
+  <meta name="keywords" content="Python,读书笔记," />
 
 
 
@@ -57,35 +57,16 @@
 
 
 
-<meta name="description" content="盒模型元素是 HTML 文档结构基础，如 p、div。每个元素都会对文档表现一定作用，意味着每个元素生成一个矩形的框(box，也叫盒模型)，盒模型总共由3种框构成。
-
-margin-edge: 外边框 (margin，确定外延位置)
-border-edge: 边框 (border，确定边框)
-padding-edge: 内边框 (padiding，框内包含的填充元素)
-
-margin-edge 到">
+<meta name="description" content="二进制码对象PyCodeObject123456789101112131415typedef struct &amp;#123;    PyObject_HEAD    int co_argcount;		/* #参数个数，除了 *arg 和 **kwarg */    int co_kwonlyargcount;	/* #keyword only arguments */    int co_nloca">
 <meta property="og:type" content="article">
-<meta property="og:title" content="前端总结之CSS基础篇">
-<meta property="og:url" content="http://remones.me/2016/02/28/前端总结之CSS基础篇/index.html">
+<meta property="og:title" content="《Python源码剖析》读书笔记:编译期的PyCodeObject与pyc文件">
+<meta property="og:url" content="http://remones.me/2016/03/02/《Python源码剖析》读书笔记-编译期的PyCodeObject与pyc文件/index.html">
 <meta property="og:site_name" content="remones note">
-<meta property="og:description" content="盒模型元素是 HTML 文档结构基础，如 p、div。每个元素都会对文档表现一定作用，意味着每个元素生成一个矩形的框(box，也叫盒模型)，盒模型总共由3种框构成。
-
-margin-edge: 外边框 (margin，确定外延位置)
-border-edge: 边框 (border，确定边框)
-padding-edge: 内边框 (padiding，框内包含的填充元素)
-
-margin-edge 到">
-<meta property="og:image" content="http://remones.me/img/2016-2-28-1.gif">
-<meta property="og:updated_time" content="2016-03-02T17:07:57.000Z">
+<meta property="og:description" content="二进制码对象PyCodeObject123456789101112131415typedef struct &amp;#123;    PyObject_HEAD    int co_argcount;		/* #参数个数，除了 *arg 和 **kwarg */    int co_kwonlyargcount;	/* #keyword only arguments */    int co_nloca">
+<meta property="og:updated_time" content="2016-03-08T18:31:12.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="前端总结之CSS基础篇">
-<meta name="twitter:description" content="盒模型元素是 HTML 文档结构基础，如 p、div。每个元素都会对文档表现一定作用，意味着每个元素生成一个矩形的框(box，也叫盒模型)，盒模型总共由3种框构成。
-
-margin-edge: 外边框 (margin，确定外延位置)
-border-edge: 边框 (border，确定边框)
-padding-edge: 内边框 (padiding，框内包含的填充元素)
-
-margin-edge 到">
+<meta name="twitter:title" content="《Python源码剖析》读书笔记:编译期的PyCodeObject与pyc文件">
+<meta name="twitter:description" content="二进制码对象PyCodeObject123456789101112131415typedef struct &amp;#123;    PyObject_HEAD    int co_argcount;		/* #参数个数，除了 *arg 和 **kwarg */    int co_kwonlyargcount;	/* #keyword only arguments */    int co_nloca">
 
 
 
@@ -103,7 +84,7 @@ margin-edge 到">
   };
 </script>
 
-  <title> 前端总结之CSS基础篇 | remones note </title>
+  <title> 《Python源码剖析》读书笔记:编译期的PyCodeObject与pyc文件 | remones note </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -221,7 +202,7 @@ margin-edge 到">
             
             
               
-                前端总结之CSS基础篇
+                《Python源码剖析》读书笔记:编译期的PyCodeObject与pyc文件
               
             
           </h1>
@@ -233,8 +214,8 @@ margin-edge 到">
               <i class="fa fa-calendar-o"></i>
             </span>
             <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-02-28T15:22:44+08:00" content="2016-02-28">
-              2016-02-28
+            <time itemprop="dateCreated" datetime="2016-03-02T01:51:27+08:00" content="2016-03-02">
+              2016-03-02
             </time>
           </span>
 
@@ -259,160 +240,8 @@ margin-edge 到">
       
 
       
-        <h3 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h3><p>元素是 HTML 文档结构基础，如 <code>p</code>、<code>div</code>。每个元素都会对文档表现一定作用，意味着每个元素生成一个矩形的框(box，也叫盒模型)，盒模型总共由3种框构成。</p>
-<ul>
-<li>margin-edge: 外边框 (margin，确定外延位置)</li>
-<li>border-edge: 边框 (border，确定边框)</li>
-<li>padding-edge: 内边框 (padiding，框内包含的填充元素)</li>
-</ul>
-<p>margin-edge 到 border 的距离叫外边距，padding-edge 到 border-edge 的距离叫内边距。</p>
-<p><img src="/img/2016-2-28-1.gif" alt="gege"></p>
-<a id="more"></a>
-<h4 id="替换元素和非替换元素"><a href="#替换元素和非替换元素" class="headerlink" title="替换元素和非替换元素"></a>替换元素和非替换元素</h4><p>如<code>img</code>元素，内容由文档本身之外的图像文件替换，替换后也生成盒。<br>大部分HTML元素，由 agent (通常是浏览器)在元素生成的盒内显示。</p>
-<h4 id="块级元素和行内元素"><a href="#块级元素和行内元素" class="headerlink" title="块级元素和行内元素"></a>块级元素和行内元素</h4><ul>
-<li>块级元素，占据全部可用宽度的元素。</li>
-<li>行内元素，不占据整行，默认情况下块级元素不能继承自行内元素，但CSS可以用display属性改变。</li>
-</ul>
-<h4 id="外边距合并"><a href="#外边距合并" class="headerlink" title="外边距合并"></a>外边距合并</h4><p>外边距合并指的是，当两个垂直外边距相遇时，它们将形成一个外边距。合并后的外边距的高度等于两个发生合并的外边距的高度中的较大者。</p>
-<h3 id="选择器"><a href="#选择器" class="headerlink" title="选择器"></a>选择器</h3><ul>
-<li>id选择器: 以<code>#</code>开头, 如<code>#meta {color: #000;}</code>, <code>&lt;p id=&quot;meta&quot;&gt;</code></li>
-<li>类选择器: 以<code>.</code>开头, 如<code>.meta {color: #000;}</code>, <code>&lt;p class=&quot;meta&quot;&gt;</code></li>
-<li>元素选择器: 以标签元素开头, 如<code>p{corlor: #000;}</code>, <code>&lt;p&gt;test&lt;/p&gt;</code></li>
-<li>后代选择器: 用空格分隔，如 <code>#meta p{...}</code>, <code>#meta</code>后代是<code>p</code>可适用</li>
-<li>子选择器: 用<code>&gt;</code>表示子关系，如<code>div &gt; p{...}</code>, <code>div</code>的子元素是<code>p</code>可使用</li>
-<li>相邻选择器: 用<code>+</code>表示相邻关系，如<code>#meta p + strong</code></li>
-<li>属性选择器: 在<code>[]</code>内, 如<code>[meta]{corlor: #000;}</code>，有多种形式</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">选择器</th>
-<th style="text-align:left">描述</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">[attribute]</td>
-<td style="text-align:left">用于选取带有指定属性的元素。</td>
-</tr>
-<tr>
-<td style="text-align:left">[attribute=value]</td>
-<td style="text-align:left">用于选取带有指定属性和值的元素。</td>
-</tr>
-<tr>
-<td style="text-align:left">[attribute~=value]</td>
-<td style="text-align:left">用于选取属性值中包含指定词汇的元素。</td>
-</tr>
-<tr>
-<td style="text-align:left">[attribute^=value]</td>
-<td style="text-align:left">匹配属性值以指定值开头的每个元素。</td>
-</tr>
-<tr>
-<td style="text-align:left">[attribute$=value]</td>
-<td style="text-align:left">匹配属性值以指定值结尾的每个元素。</td>
-</tr>
-<tr>
-<td style="text-align:left">[attribute*=value]</td>
-<td style="text-align:left">匹配属性值中包含指定值的每个元素。</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>伪类: 用于向某些选择器添加特殊效果</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th style="text-align:left">属性</th>
-<th style="text-align:left">描述</th>
-<th style="text-align:center">CSS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:left">:active</td>
-<td style="text-align:left">向被激活的元素添加样式。</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:left">:focus</td>
-<td style="text-align:left">向拥有键盘输入焦点的元素添加样式。</td>
-<td style="text-align:center">2</td>
-</tr>
-<tr>
-<td style="text-align:left">:hover</td>
-<td style="text-align:left">当鼠标悬浮在元素上方时，向元素添加样式。</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:left">:link</td>
-<td style="text-align:left">向未被访问的链接添加样式。</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:left">:visited</td>
-<td style="text-align:left">向已被访问的链接添加样式。</td>
-<td style="text-align:center">1</td>
-</tr>
-<tr>
-<td style="text-align:left">:first-child</td>
-<td style="text-align:left">向元素的第一个子元素添加样式。</td>
-<td style="text-align:center">2</td>
-</tr>
-<tr>
-<td style="text-align:left">:lang</td>
-<td style="text-align:left">向带有指定 lang 属性的元素添加样式。</td>
-<td style="text-align:center">2</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>伪元素: CSS 伪元素用于向某些选择器设置特殊效果。</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>属性</th>
-<th>描述</th>
-<th>CSS</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>:first-letter</td>
-<td>向文本的第一个字母添加特殊样式</td>
-<td>1</td>
-</tr>
-<tr>
-<td>:first-line</td>
-<td>向文本的首行添加特殊样式。</td>
-<td>1</td>
-</tr>
-<tr>
-<td>:before</td>
-<td>在元素之前添加内容。</td>
-<td>2</td>
-</tr>
-<tr>
-<td>:after</td>
-<td>在元素之后添加内容。</td>
-<td>2</td>
-</tr>
-</tbody>
-</table>
-<p>伪类和伪元素的主要区别，伪元素需要额外添加一个元素用来给实现指定的特殊效果。</p>
-<h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><ul>
-<li>static: 默认定位。元素框正常生成。块级元素生成一个矩形框，作为文档流的一部分，行内元素则会创建一个或多个行框，置于其父元素中。</li>
-<li>relative: 元素框偏移某个距离。元素仍保持其未定位前的形状，它原本所占的空间仍保留。</li>
-<li>absolute: 元素框从文档流完全删除，并相对于其包含块定位。包含块可能是文档中的另一个元素或者是初始包含块。元素原先在正常文档流中所占的空间会关闭，就好像元素原来不存在一样。元素定位后生成一个块级框，而不论原来它在正常流中生成何种类型的框。</li>
-<li>fixed: 元素框的表现类似于将 position 设置为 absolute，不过其包含块是视窗本身。</li>
-</ul>
-<h5 id="浮动清除的方法"><a href="#浮动清除的方法" class="headerlink" title="浮动清除的方法"></a>浮动清除的方法</h5><ul>
-<li>浮动元素之后加一个空的元素标签，添加属性: <code>clear: both</code></li>
-<li>浮动元素的容器添加伪类<code>:after</code>, 伪类属性包含: <code>clear: both</code></li>
-<li><code>overflow: hidden;</code>, <code>overflow: auto</code></li>
-</ul>
-<p>CSS开发规范指南: <a href="https://github.com/doyoe/html-css-guide" target="_blank" rel="external">https://github.com/doyoe/html-css-guide</a></p>
+        <h2 id="二进制码对象PyCodeObject"><a href="#二进制码对象PyCodeObject" class="headerlink" title="二进制码对象PyCodeObject"></a>二进制码对象PyCodeObject</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    PyObject_HEAD</span><br><span class="line">    <span class="keyword">int</span> co_argcount;		<span class="comment">/* #参数个数，除了 *arg 和 **kwarg */</span></span><br><span class="line">    <span class="keyword">int</span> co_kwonlyargcount;	<span class="comment">/* #keyword only arguments */</span></span><br><span class="line">    <span class="keyword">int</span> co_nlocals;		<span class="comment">/* #局部变量 */</span></span><br><span class="line">    <span class="keyword">int</span> co_stacksize;		<span class="comment">/* #用来计算栈空间的*/</span></span><br><span class="line">    <span class="keyword">int</span> co_flags;		<span class="comment">/* CO_..., see below */</span></span><br><span class="line">    PyObject *co_code;		<span class="comment">/* 指令码 */</span></span><br><span class="line">    PyObject *co_consts;	<span class="comment">/* list (constants used) */</span></span><br><span class="line">    PyObject *co_names;		<span class="comment">/* 使用了的变量名列表，赋值(变量绑定)不算使用 */</span></span><br><span class="line">    PyObject *co_varnames;	<span class="comment">/* 存放 local 变量名的 tuple */</span></span><br><span class="line">    PyObject *co_freevars;	<span class="comment">/* 存放自由变量名的tuple */</span></span><br><span class="line">    PyObject *co_cellvars;      <span class="comment">/* 存放cell变量名的tuple */</span></span><br><span class="line">    ...</span><br><span class="line">&#125; PyCodeObject;</span><br></pre></td></tr></table></figure>
+<p>moudle 被 import 时，会生成相应的.pyc文件</p>
 
       
     </div>
@@ -421,9 +250,9 @@ margin-edge 到">
       
         <div class="post-tags">
           
-            <a href="/tags/CSS/" rel="tag">#CSS</a>
+            <a href="/tags/Python/" rel="tag">#Python</a>
           
-            <a href="/tags/前端/" rel="tag">#前端</a>
+            <a href="/tags/读书笔记/" rel="tag">#读书笔记</a>
           
         </div>
       
@@ -432,16 +261,16 @@ margin-edge 到">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/02/23/Tornado源码分析-二-ioloop/" rel="next" title="Tornado源码分析(二): ioloop">
-                <i class="fa fa-chevron-left"></i> Tornado源码分析(二): ioloop
+              <a href="/2016/03/01/Go语言学习笔记/" rel="next" title="Go语言学习笔记">
+                <i class="fa fa-chevron-left"></i> Go语言学习笔记
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/02/28/Tornado源码分析-三-stack-context/" rel="prev" title="Tornado源码分析(三): stack_context">
-                Tornado源码分析(三): stack_context <i class="fa fa-chevron-right"></i>
+              <a href="/2016/03/03/《Python源码剖析》读书笔记-Python虚拟机中的类机制/" rel="prev" title="《Python源码剖析》读书笔记: Python虚拟机中的类机制">
+                《Python源码剖析》读书笔记: Python虚拟机中的类机制 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -556,7 +385,7 @@ margin-edge 到">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#盒模型"><span class="nav-number">1.</span> <span class="nav-text">盒模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#替换元素和非替换元素"><span class="nav-number">1.1.</span> <span class="nav-text">替换元素和非替换元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#块级元素和行内元素"><span class="nav-number">1.2.</span> <span class="nav-text">块级元素和行内元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#外边距合并"><span class="nav-number">1.3.</span> <span class="nav-text">外边距合并</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选择器"><span class="nav-number">2.</span> <span class="nav-text">选择器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#定位"><span class="nav-number">3.</span> <span class="nav-text">定位</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#浮动清除的方法"><span class="nav-number">3.0.1.</span> <span class="nav-text">浮动清除的方法</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#二进制码对象PyCodeObject"><span class="nav-number">1.</span> <span class="nav-text">二进制码对象PyCodeObject</span></a></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">

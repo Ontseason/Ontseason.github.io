@@ -436,6 +436,91 @@
             
               
                 
+                <a class="post-title-link" href="/2016/03/02/《Python源码剖析》读书笔记-编译期的PyCodeObject与pyc文件/" itemprop="url">
+                  《Python源码剖析》读书笔记:编译期的PyCodeObject与pyc文件
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-02T01:51:27+08:00" content="2016-03-02">
+              2016-03-02
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="二进制码对象PyCodeObject"><a href="#二进制码对象PyCodeObject" class="headerlink" title="二进制码对象PyCodeObject"></a>二进制码对象PyCodeObject</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    PyObject_HEAD</span><br><span class="line">    <span class="keyword">int</span> co_argcount;		<span class="comment">/* #参数个数，除了 *arg 和 **kwarg */</span></span><br><span class="line">    <span class="keyword">int</span> co_kwonlyargcount;	<span class="comment">/* #keyword only arguments */</span></span><br><span class="line">    <span class="keyword">int</span> co_nlocals;		<span class="comment">/* #局部变量 */</span></span><br><span class="line">    <span class="keyword">int</span> co_stacksize;		<span class="comment">/* #用来计算栈空间的*/</span></span><br><span class="line">    <span class="keyword">int</span> co_flags;		<span class="comment">/* CO_..., see below */</span></span><br><span class="line">    PyObject *co_code;		<span class="comment">/* 指令码 */</span></span><br><span class="line">    PyObject *co_consts;	<span class="comment">/* list (constants used) */</span></span><br><span class="line">    PyObject *co_names;		<span class="comment">/* 使用了的变量名列表，赋值(变量绑定)不算使用 */</span></span><br><span class="line">    PyObject *co_varnames;	<span class="comment">/* 存放 local 变量名的 tuple */</span></span><br><span class="line">    PyObject *co_freevars;	<span class="comment">/* 存放自由变量名的tuple */</span></span><br><span class="line">    PyObject *co_cellvars;      <span class="comment">/* 存放cell变量名的tuple */</span></span><br><span class="line">    ...</span><br><span class="line">&#125; PyCodeObject;</span><br></pre></td></tr></table></figure>
+<p>moudle 被 import 时，会生成相应的.pyc文件</p>
+
+          
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/03/01/Go语言学习笔记/" itemprop="url">
                   Go语言学习笔记
                 </a>
@@ -985,7 +1070,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
