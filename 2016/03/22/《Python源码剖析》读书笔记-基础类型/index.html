@@ -1,0 +1,731 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css"/>
+
+
+
+
+  <link href="//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Python,读书笔记," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.0" />
+
+
+
+
+
+
+<meta name="description" content="Int小整数池12345678910111213#ifndef NSMALLPOSINTS#define NSMALLPOSINTS           257 #endif#ifndef NSMALLNEGINTS#define NSMALLNEGINTS           5// 小整数池 [-5, 257) #endif#if NSMALLNEGINTS + NSMALLPOSINTS &amp;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《Python源码剖析》读书笔记-基础类型">
+<meta property="og:url" content="http://remones.me/2016/03/22/《Python源码剖析》读书笔记-基础类型/index.html">
+<meta property="og:site_name" content="remones note">
+<meta property="og:description" content="Int小整数池12345678910111213#ifndef NSMALLPOSINTS#define NSMALLPOSINTS           257 #endif#ifndef NSMALLNEGINTS#define NSMALLNEGINTS           5// 小整数池 [-5, 257) #endif#if NSMALLNEGINTS + NSMALLPOSINTS &amp;">
+<meta property="og:image" content="http://remones.me/img/2016-3-24-1.png">
+<meta property="og:updated_time" content="2016-03-24T13:36:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《Python源码剖析》读书笔记-基础类型">
+<meta name="twitter:description" content="Int小整数池12345678910111213#ifndef NSMALLPOSINTS#define NSMALLPOSINTS           257 #endif#ifndef NSMALLNEGINTS#define NSMALLNEGINTS           5// 小整数池 [-5, 257) #endif#if NSMALLNEGINTS + NSMALLPOSINTS &amp;">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: '[object Object]',
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 0,
+      author: '博主'
+    }
+  };
+</script>
+
+  <title> 《Python源码剖析》读书笔记-基础类型 | remones note </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">remones note</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">to be, or not to be</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-home fa-fw"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-archive fa-fw"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-tags fa-fw"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                《Python源码剖析》读书笔记-基础类型
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T10:32:49+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Int"><a href="#Int" class="headerlink" title="Int"></a>Int</h2><h3 id="小整数池"><a href="#小整数池" class="headerlink" title="小整数池"></a>小整数池</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">ifndef</span> NSMALLPOSINTS</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> NSMALLPOSINTS           <span class="number">257</span> </span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifndef</span> NSMALLNEGINTS</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> NSMALLNEGINTS           <span class="number">5</span></span></span><br><span class="line"><span class="comment">// 小整数池 [-5, 257) </span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">if</span> NSMALLNEGINTS + NSMALLPOSINTS &gt; <span class="number">0</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> PyIntObject *small_ints[NSMALLNEGINTS + NSMALLPOSINTS];</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>在 Python解释器运行之初就创建了小整数池，范围在[-5, 257)。<br><a id="more"></a></p>
+<h3 id="通用整数池"><a href="#通用整数池" class="headerlink" title="通用整数池"></a>通用整数池</h3><h4 id="PyIntBlock"><a href="#PyIntBlock" class="headerlink" title="PyIntBlock"></a>PyIntBlock</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[intobject.c]</span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> BLOCK_SIZE  <span class="number">1000</span>    <span class="comment">/* 1K less typical malloc overhead */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> BHEAD_SIZE  <span class="number">8</span>   <span class="comment">/* Enough for a 64-bit pointer */</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> N_INTOBJECTS    ((BLOCK_SIZE - BHEAD_SIZE) / sizeof(PyIntObject))</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> _intblock &#123;</span><br><span class="line">    <span class="keyword">struct</span> _intblock *next;</span><br><span class="line">    PyIntObject objects[N_INTOBJECTS];</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _intblock PyIntBlock;</span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> PyIntBlock *block_list = <span class="literal">NULL</span>;</span><br><span class="line"><span class="keyword">static</span> PyIntObject *free_list = <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+<p>PyIntBlock 使用单项链表的方式，维护着82个 IntObject 对象的可用内存。<code>free_list</code> 指向空闲的对象内存链表。</p>
+<p><img src="/img/2016-3-24-1.png" alt="pyintblock"></p>
+<p>Int派生对象无法使用整数池。创建过程:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[intobject.c]</span><br><span class="line"><span class="function">PyObject* <span class="title">PyInt_FromLong</span><span class="params">(<span class="keyword">long</span> ival)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">     <span class="keyword">register</span> PyIntObject *v; </span><br><span class="line"><span class="preprocessor">#<span class="keyword">if</span> NSMALLNEGINTS + NSMALLPOSINTS &gt; <span class="number">0</span></span></span><br><span class="line">     <span class="comment">//[1] ：尝试使用小整数对象池</span></span><br><span class="line">     <span class="keyword">if</span> (-NSMALLNEGINTS &lt;= ival &amp;&amp; ival &lt; NSMALLPOSINTS) &#123;</span><br><span class="line">        v = small_ints[ival + NSMALLNEGINTS];</span><br><span class="line">        Py_INCREF(v);</span><br><span class="line">        <span class="keyword">return</span> (PyObject *) v;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">    <span class="comment">//[2] ：为通用整数对象池申请新的内存空间</span></span><br><span class="line">    <span class="keyword">if</span> (free_list == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((free_list = fill_free_list()) == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//[3] : (inline)内联PyObject_New的行为</span></span><br><span class="line">    v = free_list;</span><br><span class="line">    free_list = (PyIntObject *)v-&gt;ob_type;</span><br><span class="line">    PyObject_INIT(v, &amp;PyInt_Type);</span><br><span class="line">    v-&gt;ob_ival = ival;</span><br><span class="line">    <span class="keyword">return</span> (PyObject *) v;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>构建通用整数池的方式:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[intobject.c]</span><br><span class="line"><span class="function"><span class="keyword">static</span> PyIntObject* <span class="title">fill_free_list</span><span class="params">(<span class="keyword">void</span>)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PyIntObject *p, *q;</span><br><span class="line">    <span class="comment">//[1] ：申请大小为sizeof(PyIntBlock)的内存空间，并链接到已有的block list中</span></span><br><span class="line">    p = (PyIntObject *) PyMem_MALLOC(<span class="keyword">sizeof</span>(PyIntBlock));</span><br><span class="line">    ((PyIntBlock *)p)-&gt;next = block_list;</span><br><span class="line">    block_list = (PyIntBlock *)p;</span><br><span class="line">    <span class="comment">//[2] ：将PyIntBlock中的PyIntObject数组——objects——转变成单向链表</span></span><br><span class="line">    p = &amp;((PyIntBlock *)p)-&gt;objects[<span class="number">0</span>];</span><br><span class="line">    q = p + N_INTOBJECTS;</span><br><span class="line">    <span class="keyword">while</span> (--q &gt; p)</span><br><span class="line">        q-&gt;ob_type = (<span class="keyword">struct</span> _typeobject *)(q-<span class="number">1</span>);</span><br><span class="line">    q-&gt;ob_type = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">return</span> p + N_INTOBJECTS - <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>开辟一块新的 PyIntBlock 内存后，先使用前插法将 PyIntBlock 插入到 block_list 的链首，之后再将 PyIntBlock 中的 PyIntObject 对象使用链表的方式串起来。</p>
+<p><code>free_list</code> 指向新创建的 PyIntBlock 中未被使用的 PyIntObject 对象内存块。在 PyIntBlock 中有 PyIntObject 对象被销毁时，它所占据的那块内存也会被 <code>free_list</code> 连接起来继续复用。</p>
+<h2 id="String"><a href="#String" class="headerlink" title="String"></a>String</h2><h3 id="基本定义"><a href="#基本定义" class="headerlink" title="基本定义"></a>基本定义</h3><p>String 是 imutable 的变长对象，内部维护 C 的字符串数组。基本定义:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">[stringobject.h]</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    PyObject_VAR_HEAD <span class="comment">// 变长 head</span></span><br><span class="line">    <span class="keyword">long</span> ob_shash; <span class="comment">// 记录 hash 值，没计算时为-1</span></span><br><span class="line">    <span class="keyword">int</span> ob_sstate; <span class="comment">// non-zero if interned else 0</span></span><br><span class="line">    <span class="keyword">char</span> ob_sval[<span class="number">1</span>]; <span class="comment">// 指向一段 ob_size + 1大小的字符数组，多一个`\0`</span></span><br><span class="line">&#125; PyStringObject;</span><br></pre></td></tr></table></figure>
+<h3 id="字符缓冲池"><a href="#字符缓冲池" class="headerlink" title="字符缓冲池"></a>字符缓冲池</h3><p>Python 初始化之后，characters 字符池为空，如果创建一个字符大小的字符串，并且该字符不存在字符池中时，就会被缓存到 characters 中。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> PyStringObject *characters[UCHAR_MAX + <span class="number">1</span>];</span><br><span class="line"></span><br><span class="line"><span class="function">PyObject* <span class="title">PyString_FromStringAndSize</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">int</span> size)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    ……</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (size == <span class="number">1</span> &amp;&amp; str != <span class="literal">NULL</span>) </span><br><span class="line">    &#123;</span><br><span class="line">        PyObject *t = (PyObject *)op;</span><br><span class="line">        PyString_InternInPlace(&amp;t);</span><br><span class="line">        op = (PyStringObject *)t;</span><br><span class="line">        characters[*str &amp; UCHAR_MAX] = op;</span><br><span class="line">        Py_INCREF(op);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> (PyObject *) op;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="intern-机制"><a href="#intern-机制" class="headerlink" title="intern 机制"></a>intern 机制</h3><p>对于 Python 中的字符串，有一套 intern 机制用于字符串对象的缓存，被缓存的字符串对象必须只能由字母、数字、下划线组成。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span></span><br><span class="line"><span class="title">PyString_InternInPlace</span><span class="params">(PyObject **p)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">register</span> PyStringObject *s = (PyStringObject *)(*p);</span><br><span class="line"></span><br><span class="line">    PyObject *t;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 不能使用在 String 派生类</span></span><br><span class="line">    <span class="keyword">if</span> (s == <span class="literal">NULL</span> || !PyString_Check(s))</span><br><span class="line">        Py_FatalError(<span class="string">"PyString_InternInPlace: strings only please!"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!PyString_CheckExact(s))</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">        </span><br><span class="line">    <span class="comment">// 已经使用intern机制缓存了</span></span><br><span class="line">    <span class="keyword">if</span> (PyString_CHECK_INTERNED(s))</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 没有缓存的， 创建 interned 字典对象</span></span><br><span class="line">    <span class="keyword">if</span> (interned == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        interned = PyDict_New();</span><br><span class="line">        <span class="keyword">if</span> (interned == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            PyErr_Clear(); <span class="comment">/* Don't leave an exception */</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    t = PyDict_GetItem(interned, (PyObject *)s);</span><br><span class="line">    <span class="comment">// 引用操作，返回</span></span><br><span class="line">    <span class="keyword">if</span> (t) &#123;</span><br><span class="line">        Py_INCREF(t);</span><br><span class="line">        Py_DECREF(*p);</span><br><span class="line">        *p = t;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">if</span> (PyDict_SetItem(interned, (PyObject *)s, (PyObject *)s) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        PyErr_Clear();</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 减2是因为还加入了 interend 字典，引用数 +2</span></span><br><span class="line">    Py_REFCNT(s) -= <span class="number">2</span>; </span><br><span class="line"></span><br><span class="line">    <span class="comment">// 修改状态</span></span><br><span class="line">    PyString_CHECK_INTERNED(s) = SSTATE_INTERNED_MORTAL;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用-join-而不是"><a href="#使用-join-而不是" class="headerlink" title="使用 join 而不是 +"></a>使用 join 而不是 +</h3><p>Python 中使用 + 拼接字符串低效的原因在于字符串对象是不可变的，于是每次拼接都会做一次完整拷贝。所以，拼接 n 个字符串要做 n-1 次拷贝操作，这是不能忍受的。</p>
+<p>如果将要拼接的字符串放在一个可迭代列表中，使用 join 操作，只会遍历并统计列表中字符串的累加长度，然后只做一次内存分配的工作。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">[stringobject.c]</span><br><span class="line"><span class="function"><span class="keyword">static</span> PyObject* <span class="title">string_join</span><span class="params">(PyStringObject *self, PyObject *orig)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">char</span> *sep = PyString_AS_STRING(self);</span><br><span class="line">    <span class="comment">// 假设调用”abc”.join(list)，那么self就是“abc”对应的PyStringObject对象</span></span><br><span class="line">    <span class="comment">// 所以seplen中存储这“abc”的长度</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">int</span> seplen = PyString_GET_SIZE(self);</span><br><span class="line">    PyObject *res = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">char</span> *p;</span><br><span class="line">    <span class="keyword">int</span> seqlen = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">size_t</span> sz = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span> i;</span><br><span class="line">    PyObject *seq, *item;</span><br><span class="line">    ……<span class="comment">// 获得list中PyStringObject对象的个数，保存在seqlen中</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历list中每一个字符串，累加获得连接list中所有字符串后的长度</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; seqlen; i++) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// seq为Python中的list对象，这里获得其中第i个字符串</span></span><br><span class="line">        item = PySequence_Fast_GET_ITEM(seq, i);</span><br><span class="line">        sz += PyString_GET_SIZE(item);</span><br><span class="line">        <span class="keyword">if</span> (i != <span class="number">0</span>)</span><br><span class="line">            sz += seplen;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 创建长度为sz的PyStringObject对象</span></span><br><span class="line">    res = PyString_FromStringAndSize((<span class="keyword">char</span>*)<span class="literal">NULL</span>, (<span class="keyword">int</span>)sz);</span><br><span class="line">    <span class="comment">// 将list中的字符串拷贝到新创建的PyStringObject对象中</span></span><br><span class="line">    p = PyString_AS_STRING(res);</span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; seqlen; ++i) </span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">size_t</span> n;</span><br><span class="line">        item = PySequence_Fast_GET_ITEM(seq, i);</span><br><span class="line">        n = PyString_GET_SIZE(item);</span><br><span class="line">        <span class="built_in">memcpy</span>(p, PyString_AS_STRING(item), n);</span><br><span class="line">        p += n;</span><br><span class="line">        <span class="keyword">if</span> (i &lt; seqlen - <span class="number">1</span>) </span><br><span class="line">          &#123;</span><br><span class="line">            <span class="built_in">memcpy</span>(p, sep, seplen);</span><br><span class="line">            p += seplen;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="tuple"><a href="#tuple" class="headerlink" title="tuple"></a>tuple</h2><p>变长不可变对象，</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    PyObject_VAR_HEAD <span class="comment">// 变长对象, ob_size</span></span><br><span class="line">    PyObject *ob_item[<span class="number">1</span>]; <span class="comment">// 存储元素的数组</span></span><br><span class="line">&#125; PyTupleObject;</span><br></pre></td></tr></table></figure>
+<h3 id="对象缓存池"><a href="#对象缓存池" class="headerlink" title="对象缓存池"></a>对象缓存池</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PyTuple_MAXSAVESIZE     <span class="number">20</span> <span class="comment">// 能够被缓存的 tuple size 最大为20</span></span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PyTuple_MAXFREELIST  <span class="number">2000</span> <span class="comment">// 每种 size 的 tuple 对象最多能缓存 2000 个</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* free_list，缓存池，PyTupleObject指针数组，数组中的元素为各种 size 的 tuple 缓存链表头 */</span></span><br><span class="line"><span class="keyword">static</span> PyTupleObject *free_list[PyTuple_MAXSAVESIZE];</span><br><span class="line"></span><br><span class="line"><span class="comment">/* numfree 用来记录每种 size 的 tuple 对象的缓存数量 */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> numfree[PyTuple_MAXSAVESIZE];</span><br></pre></td></tr></table></figure>
+<h3 id="创建对象"><a href="#创建对象" class="headerlink" title="创建对象"></a>创建对象</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PyObject *</span><br><span class="line"><span class="title">PyTuple_New</span><span class="params">(Py_ssize_t size)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PyTupleObject *op;</span><br><span class="line">    Py_ssize_t i;</span><br><span class="line">    <span class="keyword">if</span> (size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        PyErr_BadInternalCall();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="preprocessor">#<span class="keyword">if</span> PyTuple_MAXSAVESIZE &gt; <span class="number">0</span></span></span><br><span class="line">    <span class="comment">// 空 tuple 对象，空tuple对象只会被缓存一个</span></span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span> &amp;&amp; free_list[<span class="number">0</span>]) &#123; </span><br><span class="line">        op = free_list[<span class="number">0</span>]; <span class="comment">// size 为 0</span></span><br><span class="line">        Py_INCREF(op);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> COUNT_ALLOCS</span></span><br><span class="line">        tuple_zero_allocs++;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">        <span class="keyword">return</span> (PyObject *) op;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// size &lt; 20，从缓存池中取出 </span></span><br><span class="line">    <span class="keyword">if</span> (size &lt; PyTuple_MAXSAVESIZE &amp;&amp; (op = free_list[size]) != <span class="literal">NULL</span>) &#123; </span><br><span class="line">        <span class="comment">// 存在缓存池中的 op-&gt;ob_item[0] 此时指向链表的下一个元素</span></span><br><span class="line">        <span class="comment">// 重新设置链表头</span></span><br><span class="line">        free_list[size] = (PyTupleObject *) op-&gt;ob_item[<span class="number">0</span>]; </span><br><span class="line">        numfree[size]--; </span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> COUNT_ALLOCS</span></span><br><span class="line">        fast_tuple_allocs++; </span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">        <span class="comment">/* Inline PyObject_InitVar */</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> Py_TRACE_REFS</span></span><br><span class="line">        Py_SIZE(op) = size;</span><br><span class="line">        Py_TYPE(op) = &amp;PyTuple_Type;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">        _Py_NewReference((PyObject *)op);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">    &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> ((<span class="keyword">size_t</span>)size &gt; ((<span class="keyword">size_t</span>)PY_SSIZE_T_MAX - <span class="keyword">sizeof</span>(PyTupleObject) -</span><br><span class="line">                    <span class="keyword">sizeof</span>(PyObject *)) / <span class="keyword">sizeof</span>(PyObject *)) &#123;</span><br><span class="line">            <span class="keyword">return</span> PyErr_NoMemory();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 从系统堆分配内存</span></span><br><span class="line">        op = PyObject_GC_NewVar(PyTupleObject, &amp;PyTuple_Type, size);</span><br><span class="line">        <span class="keyword">if</span> (op == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span> (i=<span class="number">0</span>; i &lt; size; i++)</span><br><span class="line">        op-&gt;ob_item[i] = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>) &#123;</span><br><span class="line">        free_list[<span class="number">0</span>] = op; <span class="comment">// </span></span><br><span class="line">        ++numfree[<span class="number">0</span>];</span><br><span class="line">        Py_INCREF(op); </span><br><span class="line">    &#125;</span><br><span class="line">   _PyObject_GC_TRACK(op);</span><br><span class="line">    <span class="keyword">return</span> (PyObject *) op;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>从对象缓存池中复用对象内存时，涉及到对缓存对象链表的操作。</p>
+<h3 id="销毁对象"><a href="#销毁对象" class="headerlink" title="销毁对象"></a>销毁对象</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">tupledealloc</span><span class="params">(PyTupleObject *op)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    Py_ssize_t i;</span><br><span class="line">    Py_ssize_t len = Py_SIZE(op);</span><br><span class="line">    PyObject_GC_UnTrack(op);</span><br><span class="line">    Py_TRASHCAN_SAFE_BEGIN(op)</span><br><span class="line">    <span class="keyword">if</span> (len &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        i = len;</span><br><span class="line">        <span class="keyword">while</span> (--i &gt;= <span class="number">0</span>)</span><br><span class="line">            Py_XDECREF(op-&gt;ob_item[i]);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">if</span> PyTuple_MAXSAVESIZE &gt; <span class="number">0</span></span></span><br><span class="line">        <span class="comment">// 满足缓存条件</span></span><br><span class="line">        <span class="keyword">if</span> (len &lt; PyTuple_MAXSAVESIZE &amp;&amp;</span><br><span class="line">            numfree[len] &lt; <span class="function">PyTuple_MAXFREELIST &amp;&amp; </span><br><span class="line">            <span class="title">Py_TYPE</span><span class="params">(op)</span> </span>== &amp;PyTuple_Type) </span><br><span class="line">        &#123;</span><br><span class="line">            op-&gt;ob_item[<span class="number">0</span>] = (PyObject *) free_list[len]; <span class="comment">// 串接链表</span></span><br><span class="line">            numfree[len]++; <span class="comment">// 增加记录值</span></span><br><span class="line">            free_list[len] = op; <span class="comment">// 链表头设置</span></span><br><span class="line">            <span class="keyword">goto</span> done;</span><br><span class="line">        &#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">    &#125;</span><br><span class="line">    Py_TYPE(op)-&gt;tp_free((PyObject *)op);</span><br><span class="line">done:</span><br><span class="line">    Py_TRASHCAN_SAFE_END(op)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="List"><a href="#List" class="headerlink" title="List"></a>List</h2><h3 id="基本定义-1"><a href="#基本定义-1" class="headerlink" title="基本定义:"></a>基本定义:</h3><p>List 是变长对象，而且是 mutable 的，所以会有 length 和 capacity 的区别。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    PyObject_VAR_HEAD  <span class="comment">// ob_size 是 已使用的内存数量</span></span><br><span class="line">    PyObject **ob_item; <span class="comment">// 包含的元素列表</span></span><br><span class="line">    Py_ssize_t allocated; <span class="comment">// 创建对象时分配的内存数量</span></span><br><span class="line">&#125; PyListObject;</span><br></pre></td></tr></table></figure>
+<h3 id="创建对象-1"><a href="#创建对象-1" class="headerlink" title="创建对象"></a>创建对象</h3><p>比 Tuple 的创建的方式直观不少</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">PyObject *</span><br><span class="line"><span class="title">PyList_New</span><span class="params">(Py_ssize_t size)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PyListObject *op;</span><br><span class="line">    <span class="keyword">size_t</span> nbytes;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> SHOW_ALLOC_COUNT</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> initialized = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (!initialized) &#123;</span><br><span class="line">        Py_AtExit(show_alloc);</span><br><span class="line">        initialized = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (size &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        PyErr_BadInternalCall();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 检查内存是否够用</span></span><br><span class="line">    <span class="keyword">if</span> ((<span class="keyword">size_t</span>)size &gt; PY_SIZE_MAX / <span class="keyword">sizeof</span>(PyObject *))</span><br><span class="line">        <span class="keyword">return</span> PyErr_NoMemory();</span><br><span class="line">    nbytes = <span class="function">size * <span class="title">sizeof</span><span class="params">(PyObject *)</span></span>;</span><br><span class="line">     <span class="comment">// 对象缓存池不为空，从缓存池中分配内存</span></span><br><span class="line">    <span class="keyword">if</span> (numfree) &#123;</span><br><span class="line">        numfree--;</span><br><span class="line">        op = free_list[numfree];</span><br><span class="line">        _Py_NewReference((PyObject *)op);</span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> SHOW_ALLOC_COUNT</span></span><br><span class="line">        count_reuse++;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 从系统堆分配内存 </span></span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        op = PyObject_GC_New(PyListObject, &amp;PyList_Type);</span><br><span class="line">        <span class="keyword">if</span> (op == <span class="literal">NULL</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifdef</span> SHOW_ALLOC_COUNT</span></span><br><span class="line">        count_alloc++;</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (size &lt;= <span class="number">0</span>)</span><br><span class="line">        op-&gt;ob_item = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        op-&gt;ob_item = (PyObject **) PyMem_MALLOC(nbytes);</span><br><span class="line">        <span class="keyword">if</span> (op-&gt;ob_item == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            Py_DECREF(op);</span><br><span class="line">            <span class="keyword">return</span> PyErr_NoMemory();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">memset</span>(op-&gt;ob_item, <span class="number">0</span>, nbytes);</span><br><span class="line">    &#125;</span><br><span class="line">    Py_SIZE(op) = size;</span><br><span class="line">    op-&gt;allocated = size;</span><br><span class="line">    _PyObject_GC_TRACK(op);</span><br><span class="line">    <span class="keyword">return</span> (PyObject *) op;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="对象缓存池-1"><a href="#对象缓存池-1" class="headerlink" title="对象缓存池"></a>对象缓存池</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PyList_MAXFREELIST <span class="number">80</span> <span class="comment">// 缓存池大小为 80</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> PyListObject *free_list[PyList_MAXFREELIST];</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> numfree = <span class="number">0</span>; <span class="comment">// 和Tuple不同，缓存池为单链表形式</span></span><br></pre></td></tr></table></figure>
+<h3 id="销毁对象-1"><a href="#销毁对象-1" class="headerlink" title="销毁对象"></a>销毁对象</h3><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">static void</span><br><span class="line">list_dealloc(PyListObject *op)</span><br><span class="line">&#123;</span><br><span class="line">    Py_ssize_t i;</span><br><span class="line">    PyObject_GC_UnTrack(op);</span><br><span class="line">    Py_TRASHCAN_SAFE_BEGIN(op)</span><br><span class="line">    if (op-&gt;ob_item != NULL) &#123;</span><br><span class="line">        i = Py_SIZE(op);</span><br><span class="line">        while (--i &gt;= 0) &#123;</span><br><span class="line">            Py_XDECREF(op-&gt;ob_item[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        PyMem_FREE(op-&gt;ob_item);</span><br><span class="line">    &#125;</span><br><span class="line">    // 缓存池未满，缓存对象内存</span><br><span class="line">    if (numfree &lt; PyList_MAXFREELIST &amp;&amp; PyList_CheckExact(op))</span><br><span class="line">        free_list[numfree++] = op;</span><br><span class="line">    else</span><br><span class="line">        Py_TYPE(op)-&gt;tp_free((PyObject *)op);</span><br><span class="line">    Py_TRASHCAN_SAFE_END(op)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果缓存池未满，缓存 List 对象。</p>
+<h3 id="append-insert"><a href="#append-insert" class="headerlink" title="append, insert"></a>append, insert</h3><p>和单链表的操作方式一样:</p>
+<ul>
+<li>insert: O(k), k为在链表中的位置</li>
+<li>append: O(1), 表尾插入</li>
+</ul>
+<h3 id="resisze"><a href="#resisze" class="headerlink" title="resisze"></a>resisze</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line"><span class="title">list_resize</span><span class="params">(PyListObject *self, Py_ssize_t newsize)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PyObject **items;</span><br><span class="line">    <span class="keyword">size_t</span> new_allocated;</span><br><span class="line">    Py_ssize_t allocated = self-&gt;allocated;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 2/allocated &lt;= newsize &lt;= allocated，直接ob_size = newsize，不用重新分配内存</span></span><br><span class="line">    <span class="keyword">if</span> (allocated &gt;= newsize &amp;&amp; newsize &gt;= (allocated &gt;&gt; <span class="number">1</span>)) &#123;</span><br><span class="line">        assert(self-&gt;ob_item != <span class="literal">NULL</span> || newsize == <span class="number">0</span>);</span><br><span class="line">        Py_SIZE(self) = newsize;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    new_allocated = (newsize &gt;&gt; <span class="number">3</span>) + (newsize &lt; <span class="number">9</span> ? <span class="number">3</span> : <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line"> 	 <span class="comment">// 检查内存是否够用</span></span><br><span class="line">    <span class="keyword">if</span> (new_allocated &gt; PY_SIZE_MAX - newsize) &#123;</span><br><span class="line">        PyErr_NoMemory();</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        new_allocated += newsize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (newsize == <span class="number">0</span>)</span><br><span class="line">        new_allocated = <span class="number">0</span>;</span><br><span class="line">    items = self-&gt;ob_item;</span><br><span class="line">    <span class="comment">// 复制 items 到另外一片内存，并且回收当前 List 的内存</span></span><br><span class="line">    <span class="keyword">if</span> (new_allocated &lt;= (PY_SIZE_MAX / <span class="keyword">sizeof</span>(PyObject *)))</span><br><span class="line">        PyMem_RESIZE(items, PyObject *, new_allocated);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        items = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (items == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        PyErr_NoMemory();</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 赋新值</span></span><br><span class="line">    self-&gt;ob_item = items; </span><br><span class="line">    Py_SIZE(self) = newsize;</span><br><span class="line">    self-&gt;allocated = new_allocated;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Dict"><a href="#Dict" class="headerlink" title="Dict"></a>Dict</h2><h3 id="基本定义-2"><a href="#基本定义-2" class="headerlink" title="基本定义"></a>基本定义</h3><p>PyDictObject，内部数据结构实现采用散列表。</p>
+<p>Python 中使用的哈希函数非常简单，在一个大小为 2**i 的哈希表中，如果将哈希值低位的 i 个字节作为表的初始化索引，不仅索引速度会非常快，而且如果是一段连续的整数或者或者连续的 str 作为 dict 的 key的话，是基本上不会有冲突产生的。</p>
+<p>当当冲突真的产生了，我们更倾向于将元素填充到临近的表区域中。不过如果只是取哈希值的低位i个字节作为索引的话，还是会使得性能的表现显得非常脆弱。考虑将列表<code>[i &lt;&lt; 16 for i in range(20000)]</code>中的每个元素都作为 size 为 2**15 的 dict 的 key。因为整数的哈希值是它们本身，所以这些整数的哈希值后15位全部是0，这就导致了这20000个 key 使用的居然是同一个索引。</p>
+<p>所以 Python 中使用了两种冲突策略</p>
+<p>一种是：</p>
+<pre><code>j = ((5*j) + 1) mod 2**i
+</code></pre><p>另外一种是:</p>
+<pre><code>j = (5*j) + 1 + perturb;
+perturb &gt;&gt;= PERTURB_SHIFT;
+use j % 2**i as the next table index;
+</code></pre><p>TODO: 对这两种策略的理解后续再补充。</p>
+<p>还有几点也要了解: </p>
+<ol>
+<li>插入元素时，如果产生散列冲突，通过二次探测算法，寻找下一个可用的位置，搜寻过程出现的位置集合称之为『冲突探测链』。</li>
+<li>删除元素时，链中的元素没有被真正被删除，而是『伪删除』，否则冲突链中断，删除元素后面的元素将无法被索引到。</li>
+<li>为了保证探测算法能够终止，表中至少要有一个<code>Unused</code> slot。</li>
+<li>为了避免对一个近乎要被填满的哈希表探测带来的低效，Python会在表的大小为<code>USABLE_FRACTION</code>(2/3) 时，resize 原来的哈希表。</li>
+</ol>
+<h3 id="PyDictEntry"><a href="#PyDictEntry" class="headerlink" title="PyDictEntry"></a>PyDictEntry</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    Py_hash_t me_hash; <span class="comment">/* 缓存 me_value 的哈希值 */</span></span><br><span class="line">    PyObject *me_key; <span class="comment">/* key */</span></span><br><span class="line">    PyObject *me_value; <span class="comment">/* value */</span></span><br><span class="line">&#125; PyDictKeyEntry; <span class="comment">// 用于存储键值对信息</span></span><br></pre></td></tr></table></figure>
+<p>PyDictKeyEntry 用于表示 (key, value) 键值对</p>
+<p>Entry 的3种状态:</p>
+<ul>
+<li><code>me_key == me_value == NULL</code>，Entry处于 Unused 态，表明创建到现在 entry 中并没有存储 (key, value)对。</li>
+<li><code>me_key != NULL &amp; me_value != NULL</code>，Entrty 处于 Active 态。</li>
+<li>Entry 中的 (kev, value) 对被删除后，Entry 进入 Dummy 态，me_key 指向一个 dummy 对象。</li>
+</ul>
+<h3 id="PyDictObject"><a href="#PyDictObject" class="headerlink" title="PyDictObject"></a>PyDictObject</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _dictkeysobject PyDictKeysObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> _dictkeysobject &#123;</span><br><span class="line">    Py_ssize_t dk_refcnt; <span class="comment">// key 被引用次数</span></span><br><span class="line">    Py_ssize_t dk_size;  <span class="comment">// key 的大小</span></span><br><span class="line">    dict_lookup_func dk_lookup; <span class="comment">// 搜索函数</span></span><br><span class="line">    Py_ssize_t dk_usable; <span class="comment">// 可使用的 key 数量，为了避免探测一个快满了的哈希表，2/3时</span></span><br><span class="line">    PyDictKeyEntry dk_entries[<span class="number">1</span>]; <span class="comment">// 冲突链</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> &#123;</span><br><span class="line">    PyObject_HEAD <span class="comment">// 定长对象头 </span></span><br><span class="line">    Py_ssize_t ma_used; <span class="comment">// active entry 个数</span></span><br><span class="line">    PyDictKeysObject *ma_keys; <span class="comment">// 指向 keys 的内存空间</span></span><br><span class="line">    PyObject **ma_values; <span class="comment">// 指向 values 指针的内存空间</span></span><br><span class="line">&#125; PyDictObject;</span><br></pre></td></tr></table></figure>
+<h3 id="创建过程"><a href="#创建过程" class="headerlink" title="创建过程"></a>创建过程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> PyObject *</span><br><span class="line"><span class="title">new_dict</span><span class="params">(PyDictKeysObject *keys, PyObject **values)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PyDictObject *mp;</span><br><span class="line">    assert(keys != <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (numfree) &#123;</span><br><span class="line">        mp = free_list[--numfree]; <span class="comment">// 使用 free_list 缓存池中的内存对象</span></span><br><span class="line">        assert (mp != <span class="literal">NULL</span>);</span><br><span class="line">        assert (Py_TYPE(mp) == &amp;PyDict_Type);</span><br><span class="line">        _Py_NewReference((PyObject *)mp);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        mp = PyObject_GC_New(PyDictObject, &amp;PyDict_Type); <span class="comment">// 为PyDict_Type 分配新的内存空间</span></span><br><span class="line">        <span class="keyword">if</span> (mp == <span class="literal">NULL</span>) &#123; <span class="comment">// 内存分配失败</span></span><br><span class="line">            DK_DECREF(keys); <span class="comment">// 减少引用</span></span><br><span class="line">            free_values(values); <span class="comment">// 释放 values 指针指向的内存</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    mp-&gt;ma_keys = keys; <span class="comment">// 指向 keys 内存空间 </span></span><br><span class="line">    mp-&gt;ma_values = values; <span class="comment">// 指向 values 内存空间</span></span><br><span class="line">    mp-&gt;ma_used = <span class="number">0</span>; <span class="comment">// active 设置为 0</span></span><br><span class="line">    <span class="keyword">return</span> (PyObject *)mp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在创建 dict 过程，如果对象缓冲池(free_list)中有可用的内存对象，会使用缓冲池中的对象。</p>
+<h3 id="冲突链探测过程"><a href="#冲突链探测过程" class="headerlink" title="冲突链探测过程"></a>冲突链探测过程</h3><p>在dict中，哈希表处理冲突使用的是『开放地址法』，线性探测冲突。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> PyDictKeyEntry *</span><br><span class="line"><span class="title">lookdict</span><span class="params">(PyDictObject *mp, PyObject *key,</span><br><span class="line">         Py_hash_t hash, PyObject ***value_addr)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">size_t</span> i;</span><br><span class="line">    <span class="keyword">size_t</span> perturb;</span><br><span class="line">    PyDictKeyEntry *freeslot;</span><br><span class="line">    <span class="keyword">size_t</span> mask;</span><br><span class="line">    PyDictKeyEntry *ep0;</span><br><span class="line">    PyDictKeyEntry *ep;</span><br><span class="line">    <span class="keyword">int</span> cmp;</span><br><span class="line">    PyObject *startkey;</span><br><span class="line"></span><br><span class="line">top:</span><br><span class="line">    mask = DK_MASK(mp-&gt;ma_keys); <span class="comment">// mask 掩码</span></span><br><span class="line">    ep0 = &amp;mp-&gt;ma_keys-&gt;dk_entries[<span class="number">0</span>]; <span class="comment">// 获取冲突链</span></span><br><span class="line">    <span class="comment">// 定位冲突探测链(哈希函数)的第一个entry，通过与运算取得下标</span></span><br><span class="line">    i = (<span class="keyword">size_t</span>)hash &amp; mask;</span><br><span class="line">    ep = &amp;ep0[i];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// entry处于Unused态或者 key 与待搜索 key 匹配</span></span><br><span class="line">    <span class="keyword">if</span> (ep-&gt;me_key == <span class="literal">NULL</span> || ep-&gt;me_key == key) &#123;</span><br><span class="line">        *value_addr = &amp;ep-&gt;me_value;</span><br><span class="line">        <span class="keyword">return</span> ep;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// entry 处于 dummy 态</span></span><br><span class="line">    <span class="keyword">if</span> (ep-&gt;me_key == dummy)</span><br><span class="line">        freeslot = ep;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// entry 处于 active 态</span></span><br><span class="line">        <span class="keyword">if</span> (ep-&gt;me_hash == hash) &#123;</span><br><span class="line">            startkey = ep-&gt;me_key;</span><br><span class="line">            Py_INCREF(startkey);</span><br><span class="line">            cmp = PyObject_RichCompareBool(startkey, key, Py_EQ);</span><br><span class="line">            Py_DECREF(startkey);</span><br><span class="line">            <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>)</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">            <span class="keyword">if</span> (ep0 == mp-&gt;ma_keys-&gt;dk_entries &amp;&amp; ep-&gt;me_key == startkey) &#123;</span><br><span class="line">                <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    *value_addr = &amp;ep-&gt;me_value;</span><br><span class="line">                    <span class="keyword">return</span> ep;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">/* The dict was mutated, restart */</span></span><br><span class="line">                <span class="keyword">goto</span> top;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        freeslot = <span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (perturb = hash; ; perturb &gt;&gt;= PERTURB_SHIFT) &#123;</span><br><span class="line">        <span class="comment">// 寻找探测链上下一个entry</span></span><br><span class="line">        i = (i &lt;&lt; <span class="number">2</span>) + i + perturb + <span class="number">1</span>;</span><br><span class="line">        ep = &amp;ep0[i &amp; mask];</span><br><span class="line">        <span class="comment">// 到达 Unused 态的 entry，搜索失败</span></span><br><span class="line">        <span class="keyword">if</span> (ep-&gt;me_key == <span class="literal">NULL</span>) &#123; </span><br><span class="line">            <span class="keyword">if</span> (freeslot == <span class="literal">NULL</span>) &#123;</span><br><span class="line">                *value_addr = &amp;ep-&gt;me_value;</span><br><span class="line">                <span class="keyword">return</span> ep;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                *value_addr = &amp;freeslot-&gt;me_value;</span><br><span class="line">                <span class="keyword">return</span> freeslot;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 检查『引用相同』是否成立</span></span><br><span class="line">        <span class="keyword">if</span> (ep-&gt;me_key == key) &#123;</span><br><span class="line">            *value_addr = &amp;ep-&gt;me_value;</span><br><span class="line">            <span class="keyword">return</span> ep;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 检查『值相同』是否成立</span></span><br><span class="line">        <span class="keyword">if</span> (ep-&gt;me_hash == hash &amp;&amp; ep-&gt;me_key != dummy) &#123;</span><br><span class="line">            startkey = ep-&gt;me_key;</span><br><span class="line">            Py_INCREF(startkey);</span><br><span class="line">            cmp = PyObject_RichCompareBool(startkey, key, Py_EQ);</span><br><span class="line">            Py_DECREF(startkey);</span><br><span class="line">            <span class="keyword">if</span> (cmp &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                *value_addr = <span class="literal">NULL</span>;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (ep0 == mp-&gt;ma_keys-&gt;dk_entries &amp;&amp; ep-&gt;me_key == startkey) &#123;</span><br><span class="line">                <span class="keyword">if</span> (cmp &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    *value_addr = &amp;ep-&gt;me_value;</span><br><span class="line">                    <span class="keyword">return</span> ep;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">/* The dict was mutated, restart */</span></span><br><span class="line">                <span class="keyword">goto</span> top;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 设置 freeslot</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (ep-&gt;me_key == dummy &amp;&amp; freeslot == <span class="literal">NULL</span>)</span><br><span class="line">            freeslot = ep;</span><br><span class="line">    &#125;</span><br><span class="line">    assert(<span class="number">0</span>);          <span class="comment">/* NOT REACHED */</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="插入过程"><a href="#插入过程" class="headerlink" title="插入过程"></a>插入过程</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span></span><br><span class="line"><span class="title">PyDict_SetItem</span><span class="params">(PyObject *op, PyObject *key, PyObject *value)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PyDictObject *mp;</span><br><span class="line">    Py_hash_t hash;</span><br><span class="line">    <span class="keyword">if</span> (!PyDict_Check(op)) &#123;</span><br><span class="line">        PyErr_BadInternalCall();</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    assert(key);</span><br><span class="line">    assert(value);</span><br><span class="line">    mp = (PyDictObject *)op;</span><br><span class="line">    <span class="keyword">if</span> (!PyUnicode_CheckExact(key) ||</span><br><span class="line">        (hash = ((PyASCIIObject *) key)-&gt;hash) == -<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        hash = PyObject_Hash(key);</span><br><span class="line">        <span class="keyword">if</span> (hash == -<span class="number">1</span>)</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* insertdict() handles any resizing that might be necessary */</span></span><br><span class="line">    <span class="keyword">return</span> insertdict(mp, key, hash, value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Resize"><a href="#Resize" class="headerlink" title="Resize"></a>Resize</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span></span><br><span class="line"><span class="title">dictresize</span><span class="params">(PyDictObject *mp, Py_ssize_t minused)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    Py_ssize_t newsize; </span><br><span class="line">    PyDictKeysObject *oldkeys;</span><br><span class="line">    PyObject **oldvalues;</span><br><span class="line">    Py_ssize_t i, oldsize;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Find the smallest table size &gt; minused. */</span></span><br><span class="line">    <span class="keyword">for</span> (newsize = PyDict_MINSIZE_COMBINED; <span class="comment">// 新的 COMBINED table size</span></span><br><span class="line">         newsize &lt;= minused &amp;&amp; newsize &gt; <span class="number">0</span>;</span><br><span class="line">         newsize &lt;&lt;= <span class="number">1</span>)</span><br><span class="line">        ;</span><br><span class="line">    <span class="keyword">if</span> (newsize &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        PyErr_NoMemory();</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    oldkeys = mp-&gt;ma_keys;</span><br><span class="line">    oldvalues = mp-&gt;ma_values;</span><br><span class="line">    <span class="comment">/* Allocate a new table. */</span></span><br><span class="line">    mp-&gt;ma_keys = new_keys_object(newsize); <span class="comment">// 新的 keys object </span></span><br><span class="line">    <span class="keyword">if</span> (mp-&gt;ma_keys == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        mp-&gt;ma_keys = oldkeys; <span class="comment">// </span></span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>; <span class="comment">//</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (oldkeys-&gt;dk_lookup == lookdict)</span><br><span class="line">        mp-&gt;ma_keys-&gt;dk_lookup = lookdict;</span><br><span class="line">    oldsize = DK_SIZE(oldkeys);</span><br><span class="line">    mp-&gt;ma_values = <span class="literal">NULL</span>; <span class="comment">// </span></span><br><span class="line">    <span class="comment">/* If empty then nothing to copy so just return */</span></span><br><span class="line">    <span class="comment">// empty size, 没有需要拷贝的内容，直接返回</span></span><br><span class="line">    <span class="keyword">if</span> (oldsize == <span class="number">1</span>) &#123;</span><br><span class="line">        assert(oldkeys == Py_EMPTY_KEYS);</span><br><span class="line">        DK_DECREF(oldkeys);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* Main loop below assumes we can transfer refcount to new keys</span><br><span class="line">     * and that value is stored in me_value.</span><br><span class="line">     * Increment ref-counts and copy values here to compensate</span><br><span class="line">     * This (resizing a split table) should be relatively rare */</span></span><br><span class="line">    <span class="keyword">if</span> (oldvalues != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">// 增加引用此时是为毛 ？</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; oldsize; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (oldvalues[i] != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                Py_INCREF(oldkeys-&gt;dk_entries[i].me_key);</span><br><span class="line">                oldkeys-&gt;dk_entries[i].me_value = oldvalues[i];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/* Main loop */</span></span><br><span class="line">    <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; oldsize; i++) &#123;</span><br><span class="line">        PyDictKeyEntry *ep = &amp;oldkeys-&gt;dk_entries[i];</span><br><span class="line">        <span class="keyword">if</span> (ep-&gt;me_value != <span class="literal">NULL</span>) &#123;</span><br><span class="line">            assert(ep-&gt;me_key != dummy);</span><br><span class="line">            insertdict_clean(mp, ep-&gt;me_key, ep-&gt;me_hash, ep-&gt;me_value); <span class="comment">// olddict 拷贝到新的 dict 中</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    mp-&gt;ma_keys-&gt;dk_usable -= mp-&gt;ma_used;</span><br><span class="line">    <span class="keyword">if</span> (oldvalues != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="comment">/* NULL out me_value slot in oldkeys, in case it was shared */</span></span><br><span class="line">        <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; oldsize; i++)</span><br><span class="line">            oldkeys-&gt;dk_entries[i].me_value = <span class="literal">NULL</span>;</span><br><span class="line">        assert(oldvalues != empty_values);</span><br><span class="line">        free_values(oldvalues); <span class="comment">// 释放 values 空间</span></span><br><span class="line">        DK_DECREF(oldkeys);   <span class="comment">// 释放 keys 空间</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        assert(oldkeys-&gt;dk_lookup != lookdict_split);</span><br><span class="line">        <span class="keyword">if</span> (oldkeys-&gt;dk_lookup != lookdict_unicode_nodummy) &#123;</span><br><span class="line">            PyDictKeyEntry *ep0 = &amp;oldkeys-&gt;dk_entries[<span class="number">0</span>];</span><br><span class="line">            <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; oldsize; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (ep0[i].me_key == dummy)</span><br><span class="line">                    Py_DECREF(dummy);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        assert(oldkeys-&gt;dk_refcnt == <span class="number">1</span>);</span><br><span class="line">        <span class="function">DK_DEBUG_DECREF <span class="title">PyObject_FREE</span><span class="params">(oldkeys)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="对象缓存池-2"><a href="#对象缓存池-2" class="headerlink" title="对象缓存池"></a>对象缓存池</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">ifndef</span> PyDict_MAXFREELIST</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> PyDict_MAXFREELIST <span class="number">80</span></span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"><span class="keyword">static</span> PyDictObject *free_list[PyDict_MAXFREELIST];</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> numfree = <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<p>缓冲池大小为80，超过这个大小在销毁对象时将不会把内存回收到对象缓冲池。</p>
+<h3 id="删除对象"><a href="#删除对象" class="headerlink" title="删除对象"></a>删除对象</h3><p>删除 dict 对象时，如果缓冲池未满（80），PyDictObject 对象占据的内存将被回收进对象缓冲池，而 PyDictEntry 对象则直接被系统回收。</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line"><span class="title">dict_dealloc</span><span class="params">(PyDictObject *mp)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    PyObject **values = mp-&gt;ma_values;</span><br><span class="line">    PyDictKeysObject *keys = mp-&gt;ma_keys;</span><br><span class="line">    Py_ssize_t i, n;</span><br><span class="line">    PyObject_GC_UnTrack(mp);</span><br><span class="line">    Py_TRASHCAN_SAFE_BEGIN(mp)</span><br><span class="line">    <span class="keyword">if</span> (values != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (values != empty_values) &#123;</span><br><span class="line">            <span class="keyword">for</span> (i = <span class="number">0</span>, n = DK_SIZE(mp-&gt;ma_keys); i &lt; n; i++) &#123;</span><br><span class="line">                Py_XDECREF(values[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            free_values(values); <span class="comment">// 释放 values 对象引用</span></span><br><span class="line">        &#125;</span><br><span class="line">        DK_DECREF(keys);  <span class="comment">// </span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (keys != <span class="literal">NULL</span>) &#123;</span><br><span class="line">        assert(keys-&gt;dk_refcnt == <span class="number">1</span>);</span><br><span class="line">        DK_DECREF(keys);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (numfree &lt; <span class="function">PyDict_MAXFREELIST &amp;&amp; <span class="title">Py_TYPE</span><span class="params">(mp)</span> </span>== &amp;PyDict_Type)</span><br><span class="line">        free_list[numfree++] = mp; <span class="comment">// 缓冲池未满，填充缓冲池</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        Py_TYPE(mp)-&gt;tp_free((PyObject *)mp); <span class="comment">// 超出 PyDict_MAXFREELIST，直接由系统回收内存</span></span><br><span class="line">    Py_TRASHCAN_SAFE_END(mp)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Python/" rel="tag">#Python</a>
+          
+            <a href="/tags/读书笔记/" rel="tag">#读书笔记</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/04/Python 的一些总结/" rel="next" title="Python的一些个人总结">
+                <i class="fa fa-chevron-left"></i> Python的一些个人总结
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="http://ww3.sinaimg.cn/large/8eb3c606jw8e30umhfk5kj.jpg"
+               alt="remones" />
+          <p class="site-author-name" itemprop="name">remones</p>
+          <p class="site-description motion-element" itemprop="description">Programer | Pythoner | Life fucker</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分类</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-name">标签</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Int"><span class="nav-number">1.</span> <span class="nav-text">Int</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#小整数池"><span class="nav-number">1.1.</span> <span class="nav-text">小整数池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通用整数池"><span class="nav-number">1.2.</span> <span class="nav-text">通用整数池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#PyIntBlock"><span class="nav-number">1.2.1.</span> <span class="nav-text">PyIntBlock</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String"><span class="nav-number">2.</span> <span class="nav-text">String</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本定义"><span class="nav-number">2.1.</span> <span class="nav-text">基本定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#字符缓冲池"><span class="nav-number">2.2.</span> <span class="nav-text">字符缓冲池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#intern-机制"><span class="nav-number">2.3.</span> <span class="nav-text">intern 机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用-join-而不是"><span class="nav-number">2.4.</span> <span class="nav-text">使用 join 而不是 +</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tuple"><span class="nav-number">3.</span> <span class="nav-text">tuple</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对象缓存池"><span class="nav-number">3.1.</span> <span class="nav-text">对象缓存池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建对象"><span class="nav-number">3.2.</span> <span class="nav-text">创建对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#销毁对象"><span class="nav-number">3.3.</span> <span class="nav-text">销毁对象</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List"><span class="nav-number">4.</span> <span class="nav-text">List</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本定义-1"><span class="nav-number">4.1.</span> <span class="nav-text">基本定义:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建对象-1"><span class="nav-number">4.2.</span> <span class="nav-text">创建对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对象缓存池-1"><span class="nav-number">4.3.</span> <span class="nav-text">对象缓存池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#销毁对象-1"><span class="nav-number">4.4.</span> <span class="nav-text">销毁对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#append-insert"><span class="nav-number">4.5.</span> <span class="nav-text">append, insert</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#resisze"><span class="nav-number">4.6.</span> <span class="nav-text">resisze</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dict"><span class="nav-number">5.</span> <span class="nav-text">Dict</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本定义-2"><span class="nav-number">5.1.</span> <span class="nav-text">基本定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PyDictEntry"><span class="nav-number">5.2.</span> <span class="nav-text">PyDictEntry</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PyDictObject"><span class="nav-number">5.3.</span> <span class="nav-text">PyDictObject</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建过程"><span class="nav-number">5.4.</span> <span class="nav-text">创建过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#冲突链探测过程"><span class="nav-number">5.5.</span> <span class="nav-text">冲突链探测过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插入过程"><span class="nav-number">5.6.</span> <span class="nav-text">插入过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Resize"><span class="nav-number">5.7.</span> <span class="nav-text">Resize</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对象缓存池-2"><span class="nav-number">5.8.</span> <span class="nav-text">对象缓存池</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除对象"><span class="nav-number">5.9.</span> <span class="nav-text">删除对象</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">remones</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+
+      </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  
+
+
+  
+
+
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.0"></script>
+
+
+
+  
+  
+<script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.0"></script>
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = NexT.utils.escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    NexT.motion.middleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          NexT.utils.displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+  
+  
+
+  
+  
+
+
+</body>
+</html>

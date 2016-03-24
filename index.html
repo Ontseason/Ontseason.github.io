@@ -210,6 +210,93 @@
             
               
                 
+                <a class="post-title-link" href="/2016/03/22/《Python源码剖析》读书笔记-基础类型/" itemprop="url">
+                  《Python源码剖析》读书笔记-基础类型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-03-22T10:32:49+08:00" content="2016-03-22">
+              2016-03-22
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h2 id="Int"><a href="#Int" class="headerlink" title="Int"></a>Int</h2><h3 id="小整数池"><a href="#小整数池" class="headerlink" title="小整数池"></a>小整数池</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="preprocessor">#<span class="keyword">ifndef</span> NSMALLPOSINTS</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> NSMALLPOSINTS           <span class="number">257</span> </span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">ifndef</span> NSMALLNEGINTS</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> NSMALLNEGINTS           <span class="number">5</span></span></span><br><span class="line"><span class="comment">// 小整数池 [-5, 257) </span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br><span class="line"></span><br><span class="line"><span class="preprocessor">#<span class="keyword">if</span> NSMALLNEGINTS + NSMALLPOSINTS &gt; <span class="number">0</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">static</span> PyIntObject *small_ints[NSMALLNEGINTS + NSMALLPOSINTS];</span><br><span class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>在 Python解释器运行之初就创建了小整数池，范围在[-5, 257)。<br>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/03/22/《Python源码剖析》读书笔记-基础类型/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/03/04/Python 的一些总结/" itemprop="url">
                   Python的一些个人总结
                 </a>
@@ -1082,7 +1169,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">9</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1096,7 +1183,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-count">8</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
