@@ -187,6 +187,15 @@
 
     
     
+      
+      
+        
+        
+        
+      
+
+      
+    
 
     
       
@@ -581,175 +590,6 @@
 <figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">[py.c]</span><br><span class="line"><span class="label">PyFrameObject</span> *</span><br><span class="line"><span class="label">PyFrame_New</span>(PyThreadState *<span class="keyword">tstate, </span>PyCodeObject *<span class="preprocessor">code</span>, PyObject *globals,</span><br><span class="line">            PyObject *locals) </span><br><span class="line">&#123;</span><br><span class="line"><span class="label">...</span></span><br><span class="line"></span><br><span class="line">	<span class="preprocessor">else</span> &#123;</span><br><span class="line">        Py_ssize_t extras, ncells, nfrees<span class="comment">;</span></span><br><span class="line">        ncells = PyTuple_GET_SIZE(<span class="preprocessor">code</span>-&gt;co_cellvars)<span class="comment">;</span></span><br><span class="line">        nfrees = PyTuple_GET_SIZE(<span class="preprocessor">code</span>-&gt;co_freevars)<span class="comment">;</span></span><br><span class="line">        extras = <span class="preprocessor">code</span>-&gt;co_stacksize + <span class="preprocessor">code</span>-&gt;co_nlocals + ncells +</span><br><span class="line">            nfrees<span class="comment">; // 动态内存区由 co_stacksize, co_nlocals,  ncells, nfrees 构成</span></span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
 
           
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/03/01/Go语言学习笔记/" itemprop="url">
-                  Go语言学习笔记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            <span class="post-meta-item-icon">
-              <i class="fa fa-calendar-o"></i>
-            </span>
-            <span class="post-meta-item-text">发表于</span>
-            <time itemprop="dateCreated" datetime="2016-03-01T18:00:10+08:00" content="2016-03-01">
-              2016-03-01
-            </time>
-          </span>
-
-          
-
-          
-            
-          
-
-          
-
-          
-          
-        </div>
-      </header>
-    
-
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="1-类型"><a href="#1-类型" class="headerlink" title="1.类型"></a>1.类型</h2><h3 id="值类型"><a href="#值类型" class="headerlink" title="值类型"></a>值类型</h3><ul>
-<li>基本值类型</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>类型</th>
-<th style="text-align:center">长度</th>
-<th>默认值</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>bool</td>
-<td style="text-align:center">1</td>
-<td>false</td>
-</tr>
-<tr>
-<td>byte</td>
-<td style="text-align:center">1</td>
-<td>0</td>
-</tr>
-<tr>
-<td>rune</td>
-<td style="text-align:center">4</td>
-<td>0</td>
-</tr>
-<tr>
-<td>int, uint</td>
-<td style="text-align:center">4 or 8</td>
-<td>0</td>
-</tr>
-<tr>
-<td>int8, uint8</td>
-<td style="text-align:center">1</td>
-<td>0         </td>
-</tr>
-<tr>
-<td>int16,uint16</td>
-<td style="text-align:center">2</td>
-<td>0</td>
-</tr>
-<tr>
-<td>int32,uint32</td>
-<td style="text-align:center">4</td>
-<td>0</td>
-</tr>
-<tr>
-<td>int64,uint64</td>
-<td style="text-align:center">8</td>
-<td>0</td>
-</tr>
-<tr>
-<td>float32</td>
-<td style="text-align:center">4</td>
-<td>0.0</td>
-</tr>
-<tr>
-<td>float64</td>
-<td style="text-align:center">8</td>
-<td>0.0</td>
-</tr>
-<tr>
-<td>complex64</td>
-<td style="text-align:center">8</td>
-<td>-</td>
-</tr>
-<tr>
-<td>complex128</td>
-<td style="text-align:center">16</td>
-<td>-</td>
-</tr>
-<tr>
-<td>uintptr</td>
-<td style="text-align:center">4 or 8</td>
-<td>-</td>
-</tr>
-<tr>
-<td>string</td>
-<td style="text-align:center">-</td>
-<td>“”</td>
-</tr>
-</tbody>
-</table>
-          <div class="post-more-link text-center">
-            <a class="btn" href="/2016/03/01/Go语言学习笔记/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
         
       
     </div>
