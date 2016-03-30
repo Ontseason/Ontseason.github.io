@@ -81,7 +81,7 @@ KEYS partten, 可使用通配符?, *, []，时间复杂度 O(n)。 在 key 很�
 序列化和反序列化
 DUMP key，得到序列化的值，和RDB格式一致
 RES">
-<meta property="og:updated_time" content="2016-03-30T17:09:53.000Z">
+<meta property="og:updated_time" content="2016-03-30T17:11:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Redis笔记">
 <meta name="twitter:description" content="Redis 笔记文档 Redis 命令参考 非常详细，学习的内容主要源自于文档。
@@ -515,7 +515,7 @@ RES">
 <h3 id="使用集群"><a href="#使用集群" class="headerlink" title="使用集群"></a>使用集群</h3><p>这里对 Redis 集群的所有操作都是使用<code>./redis-trib.rb</code>脚本实现</p>
 <h4 id="新建集群"><a href="#新建集群" class="headerlink" title="新建集群"></a>新建集群</h4><ol>
 <li><p>简易的 <code>redis.conf</code>:</p>
-<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">port 7000&#10;cluster-enabled yes&#10;cluster-config-file nodes.conf&#10;cluster-node-timeout 5000&#10;appendonly yes</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">port <span class="number">7000</span></span><br><span class="line">cluster-enabled yes</span><br><span class="line">cluster-config-file nodes.conf</span><br><span class="line">cluster-node-timeout <span class="number">5000</span></span><br><span class="line">appendonly yes</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
 <ol>
