@@ -181,7 +181,7 @@ float32
 
 float64
 8">
-<meta property="og:updated_time" content="2016-03-25T03:49:09.000Z">
+<meta property="og:updated_time" content="2016-03-25T03:50:44.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go语言学习笔记">
 <meta name="twitter:description" content="1.类型值类型
@@ -599,7 +599,7 @@ float64
 </ul>
 <p>如果一个类型的方法集里包含了一个接口中的所有方法签名，那么这个类型就实现了这个接口。</p>
 <p>假设有一个<code>Speaker</code>接口，目前只包含一个函数签名<code>introduce()</code>，而现有的<code>Worker</code>类型是实现了这个函数签名对应的方法的，所以<code>Worker</code>就实现了<code>Speaker</code>接口</p>
-<figure class="highlight puppet"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">type Speaker <span class="name">interface</span> &#123;</span><br><span class="line">    introduce()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="name">var</span> <span class="name">speaker</span> <span class="name">Speacker</span> = Worker&#123;Person&#123;<span class="string">"mary"</span>, 18&#125;, <span class="string">"programer"</span>&#125;</span><br><span class="line"></span><br><span class="line">speaker.introduce()</span><br></pre></td></tr></table></figure>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Speaker <span class="keyword">interface</span> &#123;</span><br><span class="line">    introduce()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> speaker Speacker = Worker&#123;Person&#123;<span class="string">"mary"</span>, <span class="number">18</span>&#125;, <span class="string">"programer"</span>&#125;</span><br><span class="line"></span><br><span class="line">speaker.introduce()</span><br></pre></td></tr></table></figure>
 <p>如果接口 I 中还嵌入了接口 N，那么要实现 I 接口的类型必须也要实现 N 接口。</p>
 <p>interface{} 没有任何方法签名，所以任何类型都默认实现了它。(TODO: 继续加深理解)</p>
 <h2 id="Goroutine"><a href="#Goroutine" class="headerlink" title="Goroutine"></a>Goroutine</h2><p>Golang 里没有线程的概念，但在语言层支持并发，实现了一种类似协程的 goroutine 机制，而且语法相当简单，只需要在执行函数前加上<code>go</code>关键词，就能让函数处于并发状态。</p>
@@ -713,7 +713,7 @@ float64
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -727,7 +727,7 @@ float64
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">8</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
