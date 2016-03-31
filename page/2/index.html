@@ -60,7 +60,7 @@
 <meta name="description" content="Programer | Pythoner | Life fucker">
 <meta property="og:type" content="website">
 <meta property="og:title" content="remones note">
-<meta property="og:url" content="http://remones.me/tags/CSS/index.html">
+<meta property="og:url" content="http://remones.me/page/2/index.html">
 <meta property="og:site_name" content="remones note">
 <meta property="og:description" content="Programer | Pythoner | Life fucker">
 <meta name="twitter:card" content="summary">
@@ -83,7 +83,7 @@
   };
 </script>
 
-  <title> 标签: CSS | remones note </title>
+  <title> remones note </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -100,7 +100,9 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left 
+   page-home 
+ ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -179,47 +181,110 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
+  <section id="posts" class="posts-expand">
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        CSS
-        <small>标签</small>
-      </h2>
-    </div>
+    
+
+    
+    
 
     
       
 
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
+  
+  
 
-      <h1 class="post-title">
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
         
-            <a class="post-title-link" href="/2016/02/28/前端总结之CSS基础篇/" itemprop="url">
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
               
-                <span itemprop="name">前端总结之CSS基础篇</span>
+                
+                <a class="post-title-link" href="/2016/02/22/Tornado源码分析-一-gen/" itemprop="url">
+                  Tornado源码分析(一): gen
+                </a>
               
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-02-22T02:49:39+08:00" content="2016-02-22">
+              2016-02-22
+            </time>
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>Tornado 几乎是 Python 关于异步必会提及的框架，在公司负责的业务虽然很少用到，不过 Tornado 以精巧简洁的设计和十分优异的性能著称，对它是如何实现的也感到很好奇，在自己阅读几遍源码之后也试着整理思路简单分析一下。</p>
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>先从一个简单的例子开始:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/env python</span></span><br><span class="line"><span class="comment"># encoding: utf-8</span></span><br><span class="line"><span class="keyword">from</span> __future__ <span class="keyword">import</span> print_function</span><br><span class="line"><span class="keyword">from</span> tornado.ioloop <span class="keyword">import</span> IOLoop</span><br><span class="line"><span class="keyword">from</span> tornado <span class="keyword">import</span> gen</span><br><span class="line"><span class="keyword">from</span> tornado.httpclient <span class="keyword">import</span> AsyncHTTPClient</span><br><span class="line"></span><br><span class="line"><span class="decorator">@gen.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">fetch_url</span><span class="params">(url)</span>:</span></span><br><span class="line">    http_client = AsyncHTTPClient()</span><br><span class="line">    response = <span class="keyword">yield</span> http_client.fetch(url)</span><br><span class="line">    <span class="keyword">raise</span> gen.Return(response.body)</span><br><span class="line">    </span><br><span class="line"><span class="decorator">@gen.coroutine</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">main</span><span class="params">()</span>:</span></span><br><span class="line">    url = <span class="string">'http://httpbin.org/get'</span></span><br><span class="line">    content = <span class="keyword">yield</span> fetch_url(url)</span><br><span class="line">    print(content)</span><br><span class="line">    </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    ioloop = IOLoop.instance()</span><br><span class="line">    ioloop.run_sync(main)</span><br></pre></td></tr></table></figure>
+          <div class="post-more-link text-center">
+            <a class="btn" href="/2016/02/22/Tornado源码分析-一-gen/#more" rel="contents">
+              阅读全文 &raquo;
             </a>
+          </div>
         
-      </h1>
+      
+    </div>
 
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2016-02-28T15:22:44+08:00"
-              content="2016-02-28" >
-          02-28
-        </time>
-      </div>
+    <footer class="post-footer">
+      
 
-    </header>
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
   </article>
 
 
     
-  </div>
+
+  </section>
 
   
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
 
 
           </div>
